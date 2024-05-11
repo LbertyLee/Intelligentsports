@@ -1,6 +1,7 @@
 package org.dromara.system.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.experimental.Accessors;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.tenant.core.TenantEntity;
 import lombok.Data;
@@ -19,6 +20,7 @@ import java.util.Date;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_user")
+@Accessors(chain = true)
 public class SysUser extends TenantEntity {
 
     /**

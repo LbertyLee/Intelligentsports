@@ -14,6 +14,11 @@
 
     <dependencies>
 
+        <!--系统模块-->
+        <dependency>
+            <groupId>org.dromara</groupId>
+            <artifactId>ruoyi-system</artifactId>
+        </dependency>
         <!-- 通用工具-->
         <dependency>
             <groupId>org.dromara</groupId>

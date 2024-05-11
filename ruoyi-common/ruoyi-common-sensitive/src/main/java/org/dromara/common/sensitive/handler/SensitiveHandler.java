@@ -49,8 +49,8 @@ public class SensitiveHandler extends JsonSerializer<String> implements Contextu
         Sensitive annotation = property.getAnnotation(Sensitive.class);
         if (Objects.nonNull(annotation) && Objects.equals(String.class, property.getType().getRawClass())) {
             this.strategy = annotation.strategy();
-            this.roleKey = annotation.roleKey();
-            this.perms = annotation.perms();
+//            this.roleKey = annotation.roleKey();
+//            this.perms = annotation.perms();
             return this;
         }
         return prov.findValueSerializer(property.getType(), property);

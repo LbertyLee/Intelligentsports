@@ -529,6 +529,12 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
         return baseMapper.selectVoList(lqw);
     }
 
+    @Override
+    public int updateTeacherInfo(SysUser sysUser) {
+     return    baseMapper.updateById(sysUser);
+    }
+
+
     @Cacheable(cacheNames = CacheNames.SYS_USER_NAME, key = "#userId")
     @Override
     public String selectUserNameById(Long userId) {
