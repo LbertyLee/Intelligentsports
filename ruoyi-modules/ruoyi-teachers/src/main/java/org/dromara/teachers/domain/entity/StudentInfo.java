@@ -21,11 +21,17 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class StudentInfo extends TenantEntity {
 
+    /** 学生的唯一标识符*/
     private Long id;
 
+    /** 学生的姓名*/
     private String name;
 
+    /** 手环id*/
     private String uuid;
+
+    /** 学生的学号*/
+    private String studentNumber;
 
 }
 

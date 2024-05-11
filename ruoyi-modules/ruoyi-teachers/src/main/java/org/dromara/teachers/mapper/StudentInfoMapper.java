@@ -11,6 +11,8 @@ import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.teachers.domain.entity.StudentInfo;
 import org.dromara.teachers.domain.vo.StudentInfoVo;
 
+import java.util.List;
+
 
 /**
  * (StudentInfo)表数据库访问层
@@ -25,6 +27,10 @@ public interface StudentInfoMapper extends BaseMapper<StudentInfo> {
         @DataColumn(key = "userName", value = "u.user_id")
     })
     Page<StudentInfoVo> selectPageStudentInfoList(@Param("page") Page<StudentInfo> page, @Param(Constants.WRAPPER) Wrapper<StudentInfo> queryWrapper);
+
+    StudentInfo selectByStudentNumber(String studentNumber);
+
+    List<StudentInfoVo> selectStudentInfoVoList(@Param(Constants.WRAPPER) Wrapper<StudentInfo> queryWrapper);
 
 }
 
