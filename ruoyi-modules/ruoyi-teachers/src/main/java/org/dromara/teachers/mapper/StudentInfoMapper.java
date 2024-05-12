@@ -26,7 +26,8 @@ public interface StudentInfoMapper extends BaseMapper<StudentInfo> {
         @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")
     })
-    Page<StudentInfoVo> selectPageStudentInfoList(@Param("page") Page<StudentInfo> page, @Param(Constants.WRAPPER) Wrapper<StudentInfo> queryWrapper);
+    Page<StudentInfoVo> selectPageStudentInfoList(@Param("page") Page<StudentInfo> page,
+                                                  @Param(Constants.WRAPPER) Wrapper<StudentInfo> queryWrapper);
 
     StudentInfo selectByStudentNumber(String studentNumber);
 
