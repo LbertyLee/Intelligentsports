@@ -1,0 +1,101 @@
+package org.dromara.teachers.controller;
+
+
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.web.core.BaseController;
+import org.dromara.teachers.domain.bo.TeacherExerciseTypeBo;
+import org.dromara.teachers.domain.entity.TeacherExerciseType;
+import org.dromara.teachers.domain.vo.TeacherExerciseTypeVo;
+import org.dromara.teachers.service.TeacherExerciseTypeService;
+import org.springframework.web.bind.annotation.*;
+import org.dromara.common.core.domain.R;
+
+import java.util.List;
+
+/**
+ * 运动类型表(TeacherExerciseType)表控制层
+ *
+ * @author LbertyLee
+ * @since 2024-05-14 14:27:41
+ */
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/teacher/exerciseType")
+public class TeacherExerciseTypeController extends BaseController {
+
+    private final TeacherExerciseTypeService teacherExerciseTypeService;
+
+
+    /**
+     * 查询分页数据
+     */
+    @GetMapping("/page")
+    public TableDataInfo<TeacherExerciseTypeVo> pageList( TeacherExerciseTypeBo teacherExerciseTypeBo,
+                                                         PageQuery pageQuery) {
+        if(log.isInfoEnabled()){
+            log.info("TeacherExerciseTypeController.pageList.teacherExerciseTypeBo:{}",teacherExerciseTypeBo);
+            log.info("TeacherExerciseTypeController.pageList.pageQuery:{}",pageQuery);
+        }
+        return teacherExerciseTypeService.pageList(teacherExerciseTypeBo,pageQuery);
+    }
+
+    /**
+     * 查询列表
+     */
+    @GetMapping("/list")
+    public R<List<TeacherExerciseTypeVo>> list( TeacherExerciseTypeBo teacherExerciseTypeBo) {
+        if (log.isInfoEnabled()){
+            log.info("TeacherExerciseTypeController.list.teacherExerciseTypeBo:{}",teacherExerciseTypeBo);
+        }
+        return R.ok(teacherExerciseTypeService.selectList(teacherExerciseTypeBo));
+    }
+
+
+    /**
+     * 新增数据
+     *
+     * @param teacherExerciseTypeBo 实体对象
+     * @return 新增结果
+     */
+    @PostMapping("/add")
+    public R<Void> insert(@RequestBody TeacherExerciseTypeBo teacherExerciseTypeBo) {
+        if(log.isInfoEnabled()){
+            log.info("TeacherExerciseTypeController.insert.teacherExerciseTypeBo:{}",teacherExerciseTypeBo);
+        }
+        return toAjax(this.teacherExerciseTypeService.save(teacherExerciseTypeBo));
+    }
+
+    /**
+     * 修改数据
+     *
+     * @param teacherExerciseTypeBo 实体对象
+     * @return 修改结果
+     */
+    @PutMapping("/update")
+    public R<Void> update(@RequestBody TeacherExerciseTypeBo teacherExerciseTypeBo) {
+        if(log.isInfoEnabled()){
+            log.info("TeacherExerciseTypeController.update.teacherExerciseTypeBo:{}",teacherExerciseTypeBo);
+        }
+        return toAjax(this.teacherExerciseTypeService.updateById(teacherExerciseTypeBo));
+    }
+
+    /**
+     * 删除数据
+     *
+     * @param idList 主键结合
+     * @return 删除结果
+     */
+    @DeleteMapping("/delete")
+    public R<Void> delete(@RequestParam("idList") List<Long> idList) {
+        if(log.isInfoEnabled()){
+            log.info("TeacherExerciseTypeController.delete.idList:{}",idList);
+        }
+        return toAjax(this.teacherExerciseTypeService.removeByIds(idList));
+    }
+}
+
