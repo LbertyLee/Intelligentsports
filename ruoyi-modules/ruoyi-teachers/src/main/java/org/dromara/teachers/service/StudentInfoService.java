@@ -78,5 +78,7 @@ public interface StudentInfoService  {
      */
     List<StudentInfoVo> selectStudentInfoList(StudentInfoBo studentInfoBo);
 
+    List<StudentInfo> batchSelectStudentInfoListByStudentIdList(List<Long> studentIdList);
+
 }
 

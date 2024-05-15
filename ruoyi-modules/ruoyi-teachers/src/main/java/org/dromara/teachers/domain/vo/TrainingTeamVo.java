@@ -17,7 +17,7 @@ import org.dromara.common.tenant.core.TenantEntity;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeacherTrainingTeamVo extends TenantEntity {
+public class TrainingTeamVo extends TenantEntity {
 
     /**唯一标识*/
     private Long id;

@@ -1,11 +1,8 @@
 package org.dromara.teachers.domain.bo;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.dromara.common.tenant.core.TenantEntity;
 
 /**
  * 训练队(TeacherTrainingTeam)表实体类
@@ -15,7 +12,7 @@ import org.dromara.common.tenant.core.TenantEntity;
  */
 @Data
 @Accessors(chain = true)
-public class TeacherTrainingTeamBo {
+public class TrainingTeamBo {
 
     /**唯一标识*/
     private Long id;

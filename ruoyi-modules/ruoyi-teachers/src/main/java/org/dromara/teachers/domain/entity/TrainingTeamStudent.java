@@ -1,14 +1,14 @@
 package org.dromara.teachers.domain.entity;
 
 
-import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.dromara.common.tenant.core.TenantEntity;
-
-import java.io.Serializable;
+import org.dromara.teachers.domain.vo.TrainingTeamStudentVo;
 
 /**
  * 训练队学生表(TeacherTrainingTeamStudent)表实体类
@@ -20,7 +20,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class TeacherTrainingTeamStudent extends TenantEntity {
+@TableName("teacher_training_team_student")
+@AutoMapper(target = TrainingTeamStudentVo.class)
+public class TrainingTeamStudent extends TenantEntity {
     //唯一标识
     private Long id;
     //学生ID

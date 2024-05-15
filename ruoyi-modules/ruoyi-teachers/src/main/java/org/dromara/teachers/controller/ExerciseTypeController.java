@@ -7,10 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
-import org.dromara.teachers.domain.bo.TeacherExerciseTypeBo;
-import org.dromara.teachers.domain.entity.TeacherExerciseType;
-import org.dromara.teachers.domain.vo.TeacherExerciseTypeVo;
-import org.dromara.teachers.service.TeacherExerciseTypeService;
+import org.dromara.teachers.domain.bo.ExerciseTypeBo;
+import org.dromara.teachers.domain.vo.ExerciseTypeVo;
+import org.dromara.teachers.service.ExerciseTypeService;
 import org.springframework.web.bind.annotation.*;
 import org.dromara.common.core.domain.R;
 
@@ -26,17 +25,17 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/teacher/exerciseType")
-public class TeacherExerciseTypeController extends BaseController {
+public class ExerciseTypeController extends BaseController {
 
-    private final TeacherExerciseTypeService teacherExerciseTypeService;
+    private final ExerciseTypeService teacherExerciseTypeService;
 
 
     /**
      * 查询分页数据
      */
     @GetMapping("/page")
-    public TableDataInfo<TeacherExerciseTypeVo> pageList( TeacherExerciseTypeBo teacherExerciseTypeBo,
-                                                         PageQuery pageQuery) {
+    public TableDataInfo<ExerciseTypeVo> pageList(ExerciseTypeBo teacherExerciseTypeBo,
+                                                  PageQuery pageQuery) {
         if(log.isInfoEnabled()){
             log.info("TeacherExerciseTypeController.pageList.teacherExerciseTypeBo:{}",teacherExerciseTypeBo);
             log.info("TeacherExerciseTypeController.pageList.pageQuery:{}",pageQuery);
@@ -48,7 +47,7 @@ public class TeacherExerciseTypeController extends BaseController {
      * 查询列表
      */
     @GetMapping("/list")
-    public R<List<TeacherExerciseTypeVo>> list( TeacherExerciseTypeBo teacherExerciseTypeBo) {
+    public R<List<ExerciseTypeVo>> list(ExerciseTypeBo teacherExerciseTypeBo) {
         if (log.isInfoEnabled()){
             log.info("TeacherExerciseTypeController.list.teacherExerciseTypeBo:{}",teacherExerciseTypeBo);
         }
@@ -63,7 +62,7 @@ public class TeacherExerciseTypeController extends BaseController {
      * @return 新增结果
      */
     @PostMapping("/add")
-    public R<Void> insert(@RequestBody TeacherExerciseTypeBo teacherExerciseTypeBo) {
+    public R<Void> insert(@RequestBody ExerciseTypeBo teacherExerciseTypeBo) {
         if(log.isInfoEnabled()){
             log.info("TeacherExerciseTypeController.insert.teacherExerciseTypeBo:{}",teacherExerciseTypeBo);
         }
@@ -77,7 +76,7 @@ public class TeacherExerciseTypeController extends BaseController {
      * @return 修改结果
      */
     @PutMapping("/update")
-    public R<Void> update(@RequestBody TeacherExerciseTypeBo teacherExerciseTypeBo) {
+    public R<Void> update(@RequestBody ExerciseTypeBo teacherExerciseTypeBo) {
         if(log.isInfoEnabled()){
             log.info("TeacherExerciseTypeController.update.teacherExerciseTypeBo:{}",teacherExerciseTypeBo);
         }

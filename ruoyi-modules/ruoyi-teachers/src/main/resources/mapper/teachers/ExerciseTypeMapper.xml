@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.dromara.teachers.mapper.TeacherExerciseTypeMapper">
+<mapper namespace="org.dromara.teachers.mapper.ExerciseTypeMapper">
 
-    <resultMap type="org.dromara.teachers.domain.vo.TeacherExerciseTypeVo" id="TeacherExerciseTypeMap">
+    <resultMap type="org.dromara.teachers.domain.vo.ExerciseTypeVo" id="TeacherExerciseTypeMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="exerciseName" column="exercise_name" jdbcType="VARCHAR"/>
         <result property="number" column="number" jdbcType="INTEGER"/>
@@ -14,7 +14,7 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <select id="selectExerciseTypeVoPage" resultType="org.dromara.teachers.domain.vo.TeacherExerciseTypeVo">
+    <select id="selectExerciseTypeVoPage" resultType="org.dromara.teachers.domain.vo.ExerciseTypeVo">
         select * from teacher_exercise_type ${ew.getCustomSqlSegment}
     </select>
 

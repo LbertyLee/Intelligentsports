@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.teachers.mapper.TrainingTaskMapper">
+
+    <resultMap type="org.dromara.teachers.domain.entity.TrainingTask" id="TeacherTrainingTaskMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="trainingTeamId" column="training_team_id" jdbcType="VARCHAR"/>
+        <result property="exerciseTypeName" column="exercise_type_id" jdbcType="VARCHAR"/>
+        <result property="number" column="number" jdbcType="INTEGER"/>
+        <result property="createDept" column="create_dept" jdbcType="VARCHAR"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+    <select id="selectPageTrainingTaskList" resultType="org.dromara.teachers.domain.vo.TrainingTaskVo">
+            select * from teacher_training_task   ${ew.getCustomSqlSegment}
+    </select>
+
+</mapper>
+

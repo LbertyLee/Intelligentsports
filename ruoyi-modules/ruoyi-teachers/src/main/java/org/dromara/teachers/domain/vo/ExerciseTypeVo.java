@@ -1,13 +1,8 @@
 package org.dromara.teachers.domain.vo;
 
 
-import io.github.linpeilie.annotations.AutoMapper;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 import org.dromara.common.tenant.core.TenantEntity;
-import org.dromara.system.domain.vo.SysTenantVo;
 
 /**
  * 运动类型表(TeacherExerciseType)表实体类
@@ -16,8 +11,7 @@ import org.dromara.system.domain.vo.SysTenantVo;
  * @since 2024-05-14 14:27:41
  */
 @Data
-//@AutoMapper(target = TeacherExerciseTypeVo.class)
-public class TeacherExerciseTypeVo{
+public class ExerciseTypeVo extends TenantEntity {
     //唯一标识
     private Long id;
     //运动名称

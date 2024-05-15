@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.dromara.common.tenant.core.TenantEntity;
 
 import java.util.ArrayList;
 
@@ -16,7 +15,10 @@ import java.util.ArrayList;
  * @since 2024-05-12 14:51:05
  */
 @Data
-public class TeacherTrainingTeamStudentBo {
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
+public class TrainingTeamStudentBo {
     //唯一标识
     private Long id;
     //学生ID

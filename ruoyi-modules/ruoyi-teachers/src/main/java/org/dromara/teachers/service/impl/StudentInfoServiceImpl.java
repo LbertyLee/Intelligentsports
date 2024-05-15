@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.teachers.domain.bo.BindDraceletBo;
@@ -27,6 +28,7 @@ import java.util.Map;
  * @author LbertyLee
  * @since 2024-05-11 15:32:01
  */
+@Slf4j
 @Service("studentInfoService")
 @RequiredArgsConstructor
 public class StudentInfoServiceImpl  implements StudentInfoService {
@@ -36,15 +38,18 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
     /**
      * 绑定学生和手环信息
      *
-     * @param bindbraceletBo 包含学生ID和手环ID的绑定信息对象
+     * @param bindDraceletBo 包含学生ID和手环ID的绑定信息对象
      * @return 返回更新记录的数量，即影响的行数
      */
     @Override
-    public int bindbracelet(BindDraceletBo bindbraceletBo) {
+    public int bindbracelet(BindDraceletBo bindDraceletBo) {
+        if(log.isInfoEnabled()){
+            log.info("StudentInfoServiceImpl.bindbDracelet.bindDraceletBo{}",bindDraceletBo);
+        }
         // 创建学生信息对象，并设置学生ID和手环ID
         StudentInfo studentInfo = new StudentInfo()
-            .setId(bindbraceletBo.getStudentId())
-            .setUuid(bindbraceletBo.getBraceletId());
+            .setId(bindDraceletBo.getStudentId())
+            .setUuid(bindDraceletBo.getBraceletId());
         // 根据学生信息更新数据库中的记录，并返回更新的行数
         return studentInfoMapper.updateById(studentInfo);
     }
@@ -58,6 +63,10 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public TableDataInfo<StudentInfoVo> selectPageStudentInfoList(StudentInfoBo studentInfoBo, PageQuery pageQuery) {
+        if(log.isInfoEnabled()){
+            log.info("StudentInfoServiceImpl.selectPageStudentInfoList.studentInfoBo{}",studentInfoBo);
+            log.info("StudentInfoServiceImpl.selectPageStudentInfoList.pageQuery{}",pageQuery);
+        }
         // 根据查询条件和分页参数，执行数据库查询
         Page<StudentInfoVo> page = studentInfoMapper.selectPageStudentInfoList(pageQuery.build(),
             this.buildQueryWrapper(studentInfoBo));
@@ -73,6 +82,9 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public StudentInfo selectStudentInfoByStudentNumber(String studentNumber) {
+        if(log.isInfoEnabled()){
+            log.info("StudentInfoServiceImpl.selectStudentInfoByStudentNumber.studentNumber{}",studentNumber);
+        }
         // 通过学生编号查询学生信息
         return studentInfoMapper.selectByStudentNumber(studentNumber);
     }
@@ -86,6 +98,9 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public void insertStudentInfo(StudentInfoBo studentInfoBo) {
+        if(log.isInfoEnabled()){
+            log.info("StudentInfoServiceImpl.insertStudentInfo.studentInfoBo{}",studentInfoBo);
+        }
         // 将StudentInfoBo对象转换为StudentInfo对象
         StudentInfo studentInfo = BeanUtil.copyProperties(studentInfoBo, StudentInfo.class);
         // 调用mapper插入学生信息
@@ -100,6 +115,9 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public void updateStudentInfo(StudentInfoBo studentInfoBo) {
+        if(log.isInfoEnabled()){
+            log.info("StudentInfoServiceImpl.updateStudentInfo.studentInfoBo{}",studentInfoBo);
+        }
         // 将学生信息BO复制到学生信息实体
         StudentInfo studentInfo = BeanUtil.copyProperties(studentInfoBo, StudentInfo.class);
         // 根据ID更新数据库中的学生信息
@@ -115,13 +133,41 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public void deleteStudent(Long studentId) {
+        if(log.isInfoEnabled()){
+            log.info("StudentInfoServiceImpl.deleteStudent.studentId{}",studentId);
+        }
         // 根据提供的学生ID创建一个StudentInfo实例，并设置ID，然后通过mapper删除该学生信息
         studentInfoMapper.deleteById(new StudentInfo().setId(studentId));
     }
 
+    /**
+     * 根据提供的学生信息查询条件，查询学生信息列表。
+     *
+     * @param studentInfoBo 学生信息查询条件对象，包含查询时所需的各种条件。
+     * @return 返回学生信息的列表，列表中每个元素都是StudentInfoVo对象，封装了学生详细信息。
+     */
     @Override
     public List<StudentInfoVo> selectStudentInfoList(StudentInfoBo studentInfoBo) {
+        if(log.isInfoEnabled()){
+            log.info("StudentInfoServiceImpl.selectStudentInfoList.studentInfoBo{}",studentInfoBo);
+        }
+        // 构造查询条件包装对象，并通过mapper层执行查询操作，返回学生信息的Vo列表
         return studentInfoMapper.selectStudentInfoVoList(this.buildQueryWrapper(studentInfoBo));
+    }
+
+    /**
+     * 批量根据学生ID列表查询学生信息列表。
+     *
+     * @param studentIdList 学生ID的列表，类型为List<Long>。这是要查询的学生ID的集合。
+     * @return 返回一个学生信息列表，类型为List<StudentInfo>。这个列表包含了根据提供的学生ID列表查询到的学生信息。
+     */
+    @Override
+    public List<StudentInfo> batchSelectStudentInfoListByStudentIdList(List<Long> studentIdList) {
+        if(log.isInfoEnabled()){
+            log.info("StudentInfoServiceImpl.batchSelectStudentInfoListByStudentIdList.studentIdList{}",studentIdList);
+        }
+        // 调用学生信息Mapper接口，根据提供的学生ID列表批量查询学生信息
+        return studentInfoMapper.selectBatchIds(studentIdList);
     }
 
 

@@ -1,11 +1,13 @@
 package org.dromara.teachers.domain.entity;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.dromara.common.tenant.core.TenantEntity;
+import org.dromara.teachers.domain.vo.StudentInfoVo;
 
 import java.io.Serializable;
 
@@ -19,6 +21,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
+@AutoMapper(target = StudentInfoVo.class)
 public class StudentInfo extends TenantEntity {
 
     /** 学生的唯一标识符*/

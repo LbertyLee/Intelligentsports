@@ -1,11 +1,11 @@
-package org.dromara.teachers.domain.bo;
+package org.dromara.teachers.domain.entity;
 
 
-import lombok.AllArgsConstructor;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 import org.dromara.common.tenant.core.TenantEntity;
+import org.dromara.teachers.domain.vo.ExerciseTypeVo;
 
 /**
  * 运动类型表(TeacherExerciseType)表实体类
@@ -14,8 +14,9 @@ import org.dromara.common.tenant.core.TenantEntity;
  * @since 2024-05-14 14:27:41
  */
 @Data
-@SuppressWarnings("serial")
-public class TeacherExerciseTypeBo {
+@AutoMapper(target = ExerciseTypeVo.class)
+@TableName("teacher_exercise_type")
+public class ExerciseType extends TenantEntity {
     //唯一标识
     private Long id;
     //运动名称
