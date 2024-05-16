@@ -22,7 +22,7 @@ GO
 SET IDENTITY_INSERT [pj_app_info] ON
 GO
 
-INSERT INTO [pj_app_info] ([id], [app_name], [current_server], [gmt_create], [gmt_modified], [password]) VALUES (N'1', N'ruoyi-worker', N'192.168.31.100:10010', N'2023-06-13 16:32:59.2630000', N'2023-07-04 17:25:49.7980000', N'123456')
+INSERT INTO [pj_app_info] ([id], [app_name], [current_server], [gmt_create], [gmt_modified], [password]) VALUES (N'1', N'IntelligentSports-worker', N'192.168.31.100:10010', N'2023-06-13 16:32:59.2630000', N'2023-07-04 17:25:49.7980000', N'123456')
 GO
 
 SET IDENTITY_INSERT [pj_app_info] OFF

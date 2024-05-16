@@ -78,9 +78,9 @@ services:
       # 时区上海
       TZ: Asia/Shanghai
       # 管理后台用户名
-      MINIO_ROOT_USER: ruoyi
+      MINIO_ROOT_USER: IntelligentSports
       # 管理后台密码，最小8个字符
-      MINIO_ROOT_PASSWORD: ruoyi123
+      MINIO_ROOT_PASSWORD: IntelligentSports123
       # https需要指定域名
       #MINIO_SERVER_URL: "https://xxx.com:9000"
       #MINIO_BROWSER_REDIRECT_URL: "https://xxx.com:9001"
@@ -99,51 +99,51 @@ services:
     privileged: true
     network_mode: "host"
 
-  ruoyi-server1:
-    image: ruoyi/ruoyi-server:5.1.2
-    container_name: ruoyi-server1
+  IntelligentSports-server1:
+    image: IntelligentSports/IntelligentSports-server:5.1.2
+    container_name: IntelligentSports-server1
     environment:
       # 时区上海
       TZ: Asia/Shanghai
       SERVER_PORT: 8080
     volumes:
       # 配置文件
-      - /docker/server1/logs/:/ruoyi/server/logs/
+      - /docker/server1/logs/:/IntelligentSports/server/logs/
       # skywalking 探针
-#      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
+#      - /docker/skywalking/agent/:/IntelligentSports/skywalking/agent
     privileged: true
     network_mode: "host"
 
-  ruoyi-server2:
-    image: ruoyi/ruoyi-server:5.1.2
-    container_name: ruoyi-server2
+  IntelligentSports-server2:
+    image: IntelligentSports/IntelligentSports-server:5.1.2
+    container_name: IntelligentSports-server2
     environment:
       # 时区上海
       TZ: Asia/Shanghai
       SERVER_PORT: 8081
     volumes:
       # 配置文件
-      - /docker/server2/logs/:/ruoyi/server/logs/
+      - /docker/server2/logs/:/IntelligentSports/server/logs/
       # skywalking 探针
-#      - /docker/skywalking/agent/:/ruoyi/skywalking/agent
+#      - /docker/skywalking/agent/:/IntelligentSports/skywalking/agent
     privileged: true
     network_mode: "host"
 
-  ruoyi-monitor-admin:
-    image: ruoyi/ruoyi-monitor-admin:5.1.2
-    container_name: ruoyi-monitor-admin
+  IntelligentSports-monitor-admin:
+    image: IntelligentSports/IntelligentSports-monitor-admin:5.1.2
+    container_name: IntelligentSports-monitor-admin
     environment:
       # 时区上海
       TZ: Asia/Shanghai
     volumes:
       # 配置文件
-      - /docker/monitor/logs/:/ruoyi/monitor/logs
+      - /docker/monitor/logs/:/IntelligentSports/monitor/logs
     privileged: true
     network_mode: "host"
 
-  ruoyi-powerjob-server:
-    image: ruoyi/ruoyi-powerjob-server:5.1.2
-    container_name: ruoyi-powerjob-server
+  IntelligentSports-powerjob-server:
+    image: IntelligentSports/IntelligentSports-powerjob-server:5.1.2
+    container_name: IntelligentSports-powerjob-server
     environment:
       # 时区上海
       TZ: Asia/Shanghai
@@ -152,7 +152,7 @@ services:
       - "10086:10086"
       - "10010:10010"
     volumes:
-      - /docker/powerjob/logs/:/ruoyi/powerjob/logs
+      - /docker/powerjob/logs/:/IntelligentSports/powerjob/logs
     privileged: true
     network_mode: "host"
 

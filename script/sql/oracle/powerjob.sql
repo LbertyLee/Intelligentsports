@@ -29,7 +29,7 @@ DISABLE ROW MOVEMENT
 -- ----------------------------
 -- Records of "PJ_APP_INFO"
 -- ----------------------------
-INSERT INTO "PJ_APP_INFO" VALUES ('1', 'ruoyi-worker', '127.0.0.1:10010', NULL, NULL, '123456');
+INSERT INTO "PJ_APP_INFO" VALUES ('1', 'IntelligentSports-worker', '127.0.0.1:10010', NULL, NULL, '123456');
 
 -- ----------------------------
 -- Table structure for PJ_CONTAINER_INFO

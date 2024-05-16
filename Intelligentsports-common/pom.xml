@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>IntelligentSports</artifactId>
+        <groupId>org.dromara</groupId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>IntelligentSports-common-bom</module>
+        <module>IntelligentSports-common-social</module>
+        <module>IntelligentSports-common-core</module>
+        <module>IntelligentSports-common-doc</module>
+        <module>IntelligentSports-common-excel</module>
+        <module>IntelligentSports-common-idempotent</module>
+        <module>IntelligentSports-common-job</module>
+        <module>IntelligentSports-common-log</module>
+        <module>IntelligentSports-common-mail</module>
+        <module>IntelligentSports-common-mybatis</module>
+        <module>IntelligentSports-common-oss</module>
+        <module>IntelligentSports-common-ratelimiter</module>
+        <module>IntelligentSports-common-redis</module>
+        <module>IntelligentSports-common-satoken</module>
+        <module>IntelligentSports-common-security</module>
+        <module>IntelligentSports-common-sms</module>
+        <module>IntelligentSports-common-web</module>
+        <module>IntelligentSports-common-translation</module>
+        <module>IntelligentSports-common-sensitive</module>
+        <module>IntelligentSports-common-json</module>
+        <module>IntelligentSports-common-encrypt</module>
+        <module>IntelligentSports-common-tenant</module>
+        <module>IntelligentSports-common-websocket</module>
+    </modules>
+
+    <artifactId>IntelligentSports-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        common 通用模块
+    </description>
+
+</project>
