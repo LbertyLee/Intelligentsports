@@ -134,6 +134,8 @@ tenant:
     - sys_user_role
     - sys_client
     - sys_oss_config
+    - health_metrics
+    - teacher_health_metrics
 
 # MyBatisPlus配置
 # https://baomidou.com/config/

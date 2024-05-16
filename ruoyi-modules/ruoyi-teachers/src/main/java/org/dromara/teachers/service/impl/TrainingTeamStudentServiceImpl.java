@@ -87,7 +87,7 @@ public class TrainingTeamStudentServiceImpl implements TrainingTeamStudentServic
         QueryWrapper<TrainingTeamStudent> wrapper = Wrappers.query();
         // 根据条件动态构建查询Wrapper，添加团队ID或学生ID的查询条件
         return wrapper
-            .eq(ObjectUtil.isNotNull(trainingTeamStudentBo.getTrainingTeamId()), "student_id", trainingTeamStudentBo.getTrainingTeamId())
+            .eq(ObjectUtil.isNotNull(trainingTeamStudentBo.getTrainingTeamId()), "training_team_id", trainingTeamStudentBo.getTrainingTeamId())
             .eq(ObjectUtil.isNotNull(trainingTeamStudentBo.getStudentId()), "student_id",trainingTeamStudentBo.getStudentId());
     }
 }

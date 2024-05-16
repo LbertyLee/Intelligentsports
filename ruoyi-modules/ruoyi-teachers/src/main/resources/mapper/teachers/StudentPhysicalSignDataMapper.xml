@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.teachers.mapper.StudentPhysicalSignDataMapper">
+
+    <resultMap type="org.dromara.teachers.domain.entity.StudentPhysicalSignData" id="TeacherStudentPhysicalSignDataMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="taskId" column="task_id" jdbcType="INTEGER"/>
+        <result property="studentId" column="student_id" jdbcType="INTEGER"/>
+        <result property="studentName" column="student_name" jdbcType="VARCHAR"/>
+        <result property="bloodOxygen" column="blood_oxygen" jdbcType="INTEGER"/>
+        <result property="heartRate" column="heart_rate" jdbcType="INTEGER"/>
+        <result property="realTimeSpeedMatching" column="real_time_speed_matching" jdbcType="INTEGER"/>
+        <result property="totalTime" column="total_time" jdbcType="INTEGER"/>
+        <result property="createDept" column="create_dept" jdbcType="VARCHAR"/>
+        <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into public.teacher_student_physical_sign_data(task_id, student_id, student_name, blood_oxygen, heart_rate, real_time_speed_matching, total_time, create_dept, tenant_id, create_by, create_time, update_by, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.taskId}, #{entity.studentId}, #{entity.studentName}, #{entity.bloodOxygen}, #{entity.heartRate}, #{entity.realTimeSpeedMatching}, #{entity.totalTime}, #{entity.createDept}, #{entity.tenantId}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into public.teacher_student_physical_sign_data(task_id, student_id, student_name, blood_oxygen, heart_rate, real_time_speed_matching, total_time, create_dept, tenant_id, create_by, create_time, update_by, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.taskId}, #{entity.studentId}, #{entity.studentName}, #{entity.bloodOxygen}, #{entity.heartRate}, #{entity.realTimeSpeedMatching}, #{entity.totalTime}, #{entity.createDept}, #{entity.tenantId}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+         task_id = values(task_id) , student_id = values(student_id) , student_name = values(student_name) , blood_oxygen = values(blood_oxygen) , heart_rate = values(heart_rate) , real_time_speed_matching = values(real_time_speed_matching) , total_time = values(total_time) , create_dept = values(create_dept) , tenant_id = values(tenant_id) , create_by = values(create_by) , create_time = values(create_time) , update_by = values(update_by) , update_time = values(update_time)     </insert>
+
+</mapper>
+

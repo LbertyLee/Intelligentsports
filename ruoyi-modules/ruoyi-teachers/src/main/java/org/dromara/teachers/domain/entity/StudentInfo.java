@@ -1,5 +1,6 @@
 package org.dromara.teachers.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Accessors(chain = true)
 @AutoMapper(target = StudentInfoVo.class)
+@TableName("teacher_student_info")
 public class StudentInfo extends TenantEntity {
 
     /** 学生的唯一标识符*/

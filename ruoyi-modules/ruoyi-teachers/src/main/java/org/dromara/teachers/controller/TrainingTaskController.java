@@ -25,11 +25,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/teacher/trainingTask")
 public class TrainingTaskController extends BaseController {
-    /**
-     * 服务对象
-     */
 
     private final TrainingTaskService trainingTaskService;
+
+
+    /**
+     * 根据训练任务id查询训练任务基础数据
+     */
+    @GetMapping("/taskBaseInfo/{taskId}")
+    public R<TrainingTaskVo>  selectTrainingTaskById( @PathVariable Long taskId) {
+        if(log.isInfoEnabled()){
+            log.info("TrainingTaskController.selectTrainingTaskById.taskId:{}",taskId);
+        }
+        return R.ok(trainingTaskService.selectTaskBaseInfoByTaskId(taskId));
+    }
 
     /**
      * 分页查询训练任务
@@ -37,6 +46,10 @@ public class TrainingTaskController extends BaseController {
     @GetMapping("/page")
     public TableDataInfo<TrainingTaskVo>  selectPageTrainingTask(TrainingTaskBo trainingTaskBo,
                                                                  PageQuery pageQuery) {
+        if(log.isInfoEnabled()){
+            log.info("TrainingTaskController.selectPageTrainingTask.trainingTaskBo:{}",trainingTaskBo);
+            log.info("TrainingTaskController.selectPageTrainingTask.pageQuery:{}",pageQuery);
+        }
         return trainingTaskService.selectPageTrainingTask(trainingTaskBo, pageQuery);
     }
 

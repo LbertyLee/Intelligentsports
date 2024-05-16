@@ -7,6 +7,7 @@ import org.dromara.teachers.domain.bo.StudentInfoBo;
 import org.dromara.teachers.domain.entity.StudentInfo;
 import org.dromara.teachers.domain.vo.StudentInfoVo;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -78,7 +79,8 @@ public interface StudentInfoService  {
      */
     List<StudentInfoVo> selectStudentInfoList(StudentInfoBo studentInfoBo);
 
-    List<StudentInfo> batchSelectStudentInfoListByStudentIdList(List<Long> studentIdList);
+    List<StudentInfoVo> batchSelectStudentInfoListByStudentIdList(List<Long> studentIdList);
+
 
 }
 

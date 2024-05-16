@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.teachers.domain.bo.BindDraceletBo;
@@ -19,6 +20,7 @@ import org.dromara.teachers.service.StudentInfoService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -162,13 +164,14 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      * @return 返回一个学生信息列表，类型为List<StudentInfo>。这个列表包含了根据提供的学生ID列表查询到的学生信息。
      */
     @Override
-    public List<StudentInfo> batchSelectStudentInfoListByStudentIdList(List<Long> studentIdList) {
+    public List<StudentInfoVo> batchSelectStudentInfoListByStudentIdList(List<Long> studentIdList) {
         if(log.isInfoEnabled()){
             log.info("StudentInfoServiceImpl.batchSelectStudentInfoListByStudentIdList.studentIdList{}",studentIdList);
         }
         // 调用学生信息Mapper接口，根据提供的学生ID列表批量查询学生信息
-        return studentInfoMapper.selectBatchIds(studentIdList);
+        return MapstructUtils.convert(studentInfoMapper.selectBatchIds(studentIdList),StudentInfoVo.class);
     }
+
 
 
     /**

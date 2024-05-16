@@ -27,5 +27,6 @@ public interface TrainingTaskService  {
 
     TableDataInfo<TrainingTaskVo> selectPageTrainingTask(TrainingTaskBo trainingTaskBo, PageQuery pageQuery);
 
+    TrainingTaskVo selectTaskBaseInfoByTaskId(Long taskId);
 }
 

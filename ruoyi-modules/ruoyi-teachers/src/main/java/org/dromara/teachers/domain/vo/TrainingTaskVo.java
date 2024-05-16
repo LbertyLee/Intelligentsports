@@ -43,8 +43,13 @@ public class TrainingTaskVo extends TenantEntity {
     private Long trainingTime;
 
     //手环总数
+    private Integer  braceletsTotal;
 
     //手环在线数
+    private Integer braceletsOnlineNum;
+
+    //训练任务中所有学生id
+    private List<Long> students;
 
 
 }
