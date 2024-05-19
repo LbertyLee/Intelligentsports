@@ -19,6 +19,7 @@
             <groupId>org.dromara</groupId>
             <artifactId>IntelligentSports-system</artifactId>
         </dependency>
+
         <!-- 通用工具-->
         <dependency>
             <groupId>org.dromara</groupId>

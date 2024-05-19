@@ -8,7 +8,9 @@ import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.teachers.domain.bo.TrainingTaskBo;
+import org.dromara.teachers.domain.bo.DetectionDataBo;
 import org.dromara.teachers.domain.vo.TrainingTaskVo;
+import org.dromara.teachers.domain.vo.DetectionDataVo;
 import org.dromara.teachers.service.TrainingTaskService;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,25 +32,45 @@ public class TrainingTaskController extends BaseController {
 
 
     /**
+     * 重置训练任务
+     */
+    @GetMapping("/reset/{taskId}")
+    public R<Void> resetTrainingTask(@PathVariable Long taskId) {
+        if(log.isInfoEnabled()){
+            log.info("TrainingTaskController.resetTrainingTask.taskId:{}",taskId);
+        }
+       return toAjax(trainingTaskService.resetTrainingTask(taskId));
+    }
+    /**
      * 根据训练任务id查询训练任务基础数据
      */
     @GetMapping("/taskBaseInfo/{taskId}")
-    public R<TrainingTaskVo>  selectTrainingTaskById( @PathVariable Long taskId) {
-        if(log.isInfoEnabled()){
-            log.info("TrainingTaskController.selectTrainingTaskById.taskId:{}",taskId);
+    public R<TrainingTaskVo> selectTrainingTaskById(@PathVariable Long taskId) {
+        if (log.isInfoEnabled()) {
+            log.info("TrainingTaskController.selectTrainingTaskById.taskId:{}", taskId);
         }
         return R.ok(trainingTaskService.selectTaskBaseInfoByTaskId(taskId));
     }
 
     /**
+     * 根据训练任务id和学生id列表查询实时检测数据
+     */
+    @PostMapping("/detectionData")
+    public R<DetectionDataVo> selectDetectionData(@RequestBody DetectionDataBo detectionDataBo) {
+        if(log.isInfoEnabled()){
+            log.info("TrainingTaskController.selectDetectionData.detectionDataBo:{}",detectionDataBo);
+        }
+        return R.ok(trainingTaskService.selectDetectionData(detectionDataBo));
+    }
+    /**
      * 分页查询训练任务
      */
     @GetMapping("/page")
-    public TableDataInfo<TrainingTaskVo>  selectPageTrainingTask(TrainingTaskBo trainingTaskBo,
-                                                                 PageQuery pageQuery) {
-        if(log.isInfoEnabled()){
-            log.info("TrainingTaskController.selectPageTrainingTask.trainingTaskBo:{}",trainingTaskBo);
-            log.info("TrainingTaskController.selectPageTrainingTask.pageQuery:{}",pageQuery);
+    public TableDataInfo<TrainingTaskVo> selectPageTrainingTask(TrainingTaskBo trainingTaskBo,
+                                                                PageQuery pageQuery) {
+        if (log.isInfoEnabled()) {
+            log.info("TrainingTaskController.selectPageTrainingTask.trainingTaskBo:{}", trainingTaskBo);
+            log.info("TrainingTaskController.selectPageTrainingTask.pageQuery:{}", pageQuery);
         }
         return trainingTaskService.selectPageTrainingTask(trainingTaskBo, pageQuery);
     }
@@ -62,8 +84,8 @@ public class TrainingTaskController extends BaseController {
      */
     @GetMapping("/{id}")
     public R<TrainingTaskVo> selectOne(@PathVariable Long id) {
-        if (log.isInfoEnabled()){
-            log.info("TrainingTaskController.selectOne.id={}",id);
+        if (log.isInfoEnabled()) {
+            log.info("TrainingTaskController.selectOne.id={}", id);
         }
         return R.ok(trainingTaskService.selectOne(id));
     }
@@ -76,8 +98,8 @@ public class TrainingTaskController extends BaseController {
      */
     @PostMapping("/add")
     public R<TrainingTaskVo> insert(@RequestBody TrainingTaskBo trainingTaskBo) {
-        if (log.isInfoEnabled()){
-            log.info("TrainingTaskController.insert.trainingTaskBo={}",trainingTaskBo);
+        if (log.isInfoEnabled()) {
+            log.info("TrainingTaskController.insert.trainingTaskBo={}", trainingTaskBo);
         }
         return R.ok(this.trainingTaskService.save(trainingTaskBo));
     }
@@ -90,8 +112,8 @@ public class TrainingTaskController extends BaseController {
      */
     @PutMapping("/update")
     public R<Void> update(@RequestBody TrainingTaskBo trainingTaskBo) {
-        if (log.isInfoEnabled()){
-            log.info("TrainingTaskController.update.trainingTaskBo={}",trainingTaskBo);
+        if (log.isInfoEnabled()) {
+            log.info("TrainingTaskController.update.trainingTaskBo={}", trainingTaskBo);
         }
         return toAjax(this.trainingTaskService.updateById(trainingTaskBo));
     }
@@ -104,8 +126,8 @@ public class TrainingTaskController extends BaseController {
      */
     @DeleteMapping("/delete")
     public R<Void> delete(@RequestParam("idList") List<Long> idList) {
-        if (log.isInfoEnabled()){
-            log.info("TrainingTaskController.delete.idList={}",idList);
+        if (log.isInfoEnabled()) {
+            log.info("TrainingTaskController.delete.idList={}", idList);
         }
         return toAjax(this.trainingTaskService.removeByIds(idList));
     }

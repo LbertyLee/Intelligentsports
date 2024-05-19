@@ -3,8 +3,8 @@ package org.dromara.teachers.controller;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.web.core.BaseController;
-import org.dromara.teachers.domain.entity.HealthMetrics;
-import org.dromara.teachers.domain.vo.HealthMetricsVo;
+import org.dromara.teachers.domain.vo.BraceletStatusVo;
+import org.dromara.teachers.mapper.BraceletStatusMapper;
 import org.dromara.teachers.mapper.HealthMetricsMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +18,13 @@ import java.util.List;
 
 public class TestController extends BaseController {
 
-    private final HealthMetricsMapper healthMetricsMapper;
+
+    private final BraceletStatusMapper braceletStatusMapper;
+
 
     @GetMapping
-    public R<List<HealthMetrics>> getHealthMetrics(){
-        return R.ok(healthMetricsMapper.selectList());
+    public R<List<BraceletStatusVo>> getHealthMetrics(){
+        return R.ok(braceletStatusMapper.selectVoBatchIds(List.of("1","2")));
     }
 
 }

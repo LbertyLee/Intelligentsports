@@ -134,8 +134,8 @@ tenant:
     - sys_user_role
     - sys_client
     - sys_oss_config
-    - health_metrics
     - teacher_health_metrics
+    - teacher_bracelet_status
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
@@ -144,7 +144,7 @@ mybatis-plus:
   # 例如 com.**.**.mapper
   mapperPackage: org.dromara.**.mapper
   # 对应的 XML 文件位置
-  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  mapperLocations: classpath*:mapper/**/**Mapper.xml
   # 实体扫描，多个package用逗号或者分号分隔
   typeAliasesPackage: org.dromara.**.domain
   global-config:

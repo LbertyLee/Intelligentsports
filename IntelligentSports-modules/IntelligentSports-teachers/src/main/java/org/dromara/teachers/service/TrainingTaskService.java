@@ -1,11 +1,11 @@
 package org.dromara.teachers.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.teachers.domain.bo.TrainingTaskBo;
-import org.dromara.teachers.domain.entity.TrainingTask;
+import org.dromara.teachers.domain.bo.DetectionDataBo;
 import org.dromara.teachers.domain.vo.TrainingTaskVo;
+import org.dromara.teachers.domain.vo.DetectionDataVo;
 
 import java.util.List;
 
@@ -28,5 +28,10 @@ public interface TrainingTaskService  {
     TableDataInfo<TrainingTaskVo> selectPageTrainingTask(TrainingTaskBo trainingTaskBo, PageQuery pageQuery);
 
     TrainingTaskVo selectTaskBaseInfoByTaskId(Long taskId);
+
+    DetectionDataVo selectDetectionData(DetectionDataBo detectionDataBo);
+
+    int resetTrainingTask(Long taskId);
+
 }
 

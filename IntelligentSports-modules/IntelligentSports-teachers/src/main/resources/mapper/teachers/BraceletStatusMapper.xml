@@ -2,5 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dromara.teachers.mapper.BraceletStatusMapper">
 
+    <resultMap type="org.dromara.teachers.domain.entity.BraceletStatus" id="TeacherBraceletStatusMap">
+        <result property="uuid" column="uuid" jdbcType="VARCHAR"/>
+        <result property="isOnline" column="is_online" jdbcType="INTEGER"/>
+    </resultMap>
+
 
 </mapper>
+

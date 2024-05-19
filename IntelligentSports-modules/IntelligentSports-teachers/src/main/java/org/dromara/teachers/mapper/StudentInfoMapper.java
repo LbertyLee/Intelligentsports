@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
+import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.teachers.domain.entity.StudentInfo;
 import org.dromara.teachers.domain.vo.StudentInfoVo;
 
@@ -21,7 +22,7 @@ import java.util.List;
  * @since 2024-05-11 15:31:59
  */
 @Mapper
-public interface StudentInfoMapper extends BaseMapper<StudentInfo> {
+public interface StudentInfoMapper extends BaseMapperPlus<StudentInfo,StudentInfoVo> {
     @DataPermission({
         @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")

@@ -1,23 +1,22 @@
 package org.dromara.teachers.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.micrometer.core.instrument.binder.BaseUnits;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.common.core.utils.DateUtils;
+import org.dromara.common.core.exception.ServiceException;
+import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.teachers.constants.Constants;
+import org.dromara.teachers.domain.bo.TaskHealthMetricsBo;
 import org.dromara.teachers.domain.bo.TrainingTaskBo;
-import org.dromara.teachers.domain.bo.TrainingTeamBo;
 import org.dromara.teachers.domain.bo.TrainingTeamStudentBo;
+import org.dromara.teachers.domain.bo.DetectionDataBo;
 import org.dromara.teachers.domain.entity.*;
 import org.dromara.teachers.domain.vo.*;
 import org.dromara.teachers.mapper.TrainingTaskMapper;
@@ -25,11 +24,9 @@ import org.dromara.teachers.service.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 训练任务表(TeacherTrainingTask)表服务实现类
@@ -49,54 +46,101 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
 
     private final StudentInfoService studentInfoService;
 
-    private final ExerciseTypeService exerciseTypeService;
+    private final BraceletStatusService braceletStatusService;
 
-    private final TrainingTeamService trainingTeamService;
+    private final HealthMetricsService healthMetricsService;
+
+    private final TaskHealthMetricsService taskHealthMetricsService;
 
 
     @Override
-public TrainingTaskVo selectTaskBaseInfoByTaskId(Long taskId) {
-    if (log.isInfoEnabled()) {
-        log.info("Start querying task base info by taskId, taskId:{}", taskId);
-    }
-    TrainingTaskVo trainingTaskVo = null;
-    try {
-        // 调用mapper层执行查询操作，增加空指针异常处理
-        trainingTaskVo = BeanUtil.copyProperties(trainingTaskMapper.selectById(taskId), TrainingTaskVo.class);
-        if (trainingTaskVo == null) {
-            if (log.isInfoEnabled()) {
-                log.info("No task found with taskId:{}", taskId);
-            }
-            throw new RuntimeException("该训练任务不存在,请输入正确的训练任务编}");// 或者抛出一个自定义异常
+    public int resetTrainingTask(Long taskId) {
+        if (log.isInfoEnabled()){
+            log.info("TrainingTaskServiceImpl.resetTrainingTask.taskId:{}", taskId);
         }
-        // 学生id列表
+        return taskHealthMetricsService.resetTaskHealthMetrics(taskId);
+    }
+
+    @Override
+    public DetectionDataVo selectDetectionData(DetectionDataBo detectionDataBo) {
+        if (log.isInfoEnabled()) {
+            log.info("TrainingTaskServiceImpl.selectDetectionData.detectionDataBo{}", detectionDataBo);
+        }
+        DetectionDataVo detectionDataVo = new DetectionDataVo();
+        List<Long> studentIds = detectionDataBo.getStudentIds();
+        List<StudentInfoVo> studentInfoVoList = studentInfoService.batchSelectStudentInfoListByStudentIdList(studentIds);
+        if (ObjectUtil.isEmpty(studentInfoVoList)) {
+            return detectionDataVo;
+        }
+        //学生手环id列表
+        List<String> braceletsTotalNum = studentInfoVoList.stream().map(StudentInfoVo::getUuid).toList();
+        detectionDataVo.setBraceletsTotalNum(braceletsTotalNum.size());
+        //在线手环列表
+        List<BraceletStatusVo> braceletStatusVoList = braceletStatusService.selectBraceletList(braceletsTotalNum);
+        List<BraceletStatusVo> braceletStatusVos = braceletStatusVoList.stream()
+            .filter(braceletStatusVo -> Objects.equals(braceletStatusVo.getIsOnline(), Constants.IsOnline)).toList();
+        detectionDataVo.setBraceletsOnlineNum(braceletStatusVos.size());
+        //在线的手环的uuid
+        List<String> braceletsIdList = braceletStatusVos.stream().map(BraceletStatusVo::getUuid).toList();
+        //手环实时数据
+//        long time = System.currentTimeMillis()/1000;
+        long time = 1714585138;  //模拟时间
+        List<List<TaskHealthMetricsVo>> healthMetricsVos = healthMetricsService.selectHealthMetricsListByBraceletsIdList(braceletsIdList, time);
+        if (ObjectUtil.isEmpty(healthMetricsVos)) {
+            return detectionDataVo;
+        }
+        //最新数据
+        List<TaskHealthMetricsVo> list = healthMetricsVos.stream().map(
+            healthMetricsVoList -> {
+                TaskHealthMetricsVo taskHealthMetricsVoNew = healthMetricsVoList.get(0);
+                TaskHealthMetricsVo taskHealthMetricsVo = healthMetricsVoList.get(1);
+                //计算实时配速[实时配速=(上一秒的总距离-此时的总距离)/1s]
+                Long taskHealthMetricsVoNewTotalDistance = taskHealthMetricsVoNew.getTotalDistance();
+                Long healthMetricsVoTotalDistance = taskHealthMetricsVo.getTotalDistance();
+                taskHealthMetricsVoNew.setMatchingSpeed((taskHealthMetricsVoNewTotalDistance-healthMetricsVoTotalDistance));
+                return taskHealthMetricsVoNew;
+            }).toList();
+        detectionDataVo.setTaskHealthMetricsVoList(list);
+        if (ObjectUtil.isNotNull(list)) {
+            List<TaskHealthMetricsBo> convert = MapstructUtils.convert(list, TaskHealthMetricsBo.class);
+            if (ObjectUtil.isNotNull(convert)) {
+                List<TaskHealthMetricsBo> taskHealthMetricsBos = convert.stream().peek(
+                    taskHealthMetricsBo -> taskHealthMetricsBo.setTaskId(detectionDataBo.getTaskId())
+                ).toList();
+                taskHealthMetricsService.insertList(taskHealthMetricsBos);
+            }
+        }
+        return detectionDataVo;
+    }
+
+
+
+    /**
+     * 根据任务ID查询训练任务的基本信息。
+     *
+     * @param taskId 训练任务的ID，不能为空。
+     * @return TrainingTaskVo 训练任务的视图对象，包含了任务的基本信息以及关联的学生ID列表。
+     * @throws ServiceException 如果指定的训练任务不存在，则抛出异常。
+     */
+    @Override
+    public TrainingTaskVo selectTaskBaseInfoByTaskId(Long taskId) {
+        if (log.isInfoEnabled()) {
+            log.info("Start querying task base info by taskId, taskId:{}", taskId);
+        }
+        TrainingTaskVo trainingTaskVo = null;
+        trainingTaskVo = BeanUtil.copyProperties(trainingTaskMapper.selectById(taskId), TrainingTaskVo.class);
+        if (ObjectUtil.isNull(trainingTaskVo)) {
+            throw new ServiceException("该训练任务不存在,请输入正确的训练任务编}");
+        }
         List<Long> studentIdList = trainingTeamStudentService
             .selectList(new TrainingTeamStudentBo().setTrainingTeamId(trainingTaskVo.getTrainingTeamId()))
             .stream().map(TrainingTeamStudentVo::getStudentId).toList();
         if (ObjectUtil.isEmpty(studentIdList)) {
             return trainingTaskVo;
         }
-        //设置任务中的学生id列表
         trainingTaskVo.setStudents(studentIdList);
-        //设置手环总数
-        trainingTaskVo.setBraceletsTotal(studentIdList.size());
-        List<StudentInfoVo> studentInfoVoList = studentInfoService.batchSelectStudentInfoListByStudentIdList(studentIdList);
-        //在线手环数量统计
-        List<String> braceletIdList = studentInfoVoList.stream().map(StudentInfoVo::getUuid).toList();
-        if (ObjectUtil.isEmpty(braceletIdList)) {
-            trainingTaskVo.setBraceletsOnlineNum(0);
-        } else {
-            // todo 根据手环id列表查询在线手环数量
-            trainingTaskVo.setBraceletsOnlineNum(braceletIdList.size());
-        }
-    } catch (Exception e) {
-        // 异常处理逻辑
-        log.error("Error occurred while querying task base info by taskId, taskId:{}", taskId, e);
-        // 根据实际情况，可能需要抛出自定义异常或返回null
-        throw new RuntimeException("Error occurred while querying task base info by taskId");
+        return trainingTaskVo;
     }
-    return trainingTaskVo;
-}
 
 
     /**
@@ -172,7 +216,6 @@ public TrainingTaskVo selectTaskBaseInfoByTaskId(Long taskId) {
         // 将查询结果包装成TableDataInfo对象返回
         return TableDataInfo.build(page);
     }
-
 
 
     private Wrapper<TrainingTask> buildQueryWrapper(TrainingTaskBo trainingTaskBo) {

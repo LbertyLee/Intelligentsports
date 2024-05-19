@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.teachers.mapper.TaskHealthMetricsMapper">
+
+    <resultMap type="org.dromara.teachers.domain.entity.TaskHealthMetrics" id="TeacherTaskHealthMetricsMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="braceletId" column="bracelet_id" jdbcType="VARCHAR"/>
+        <result property="taskId" column="task_id" jdbcType="INTEGER"/>
+        <result property="timestamp" column="timestamp" jdbcType="INTEGER"/>
+        <result property="totalSteps" column="total_steps" jdbcType="INTEGER"/>
+        <result property="totalCalories" column="total_calories" jdbcType="INTEGER"/>
+        <result property="heartRate" column="heart_rate" jdbcType="INTEGER"/>
+        <result property="bloodPressure" column="blood_pressure" jdbcType="INTEGER"/>
+        <result property="bloodOxygen" column="blood_oxygen" jdbcType="INTEGER"/>
+        <result property="createDept" column="create_dept" jdbcType="INTEGER"/>
+        <result property="tenantId" column="tenant_id" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+</mapper>
+

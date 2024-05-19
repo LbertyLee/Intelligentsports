@@ -13,24 +13,5 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="createDept" column="create_dept" jdbcType="INTEGER"/>
     </resultMap>
-
-    <!-- 批量插入 -->
-    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into public.teacher_training_team_student(student_id, training_team_id, tenant_id, create_by, create_time, update_by, update_time, create_dept)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-        (#{entity.studentId}, #{entity.trainingTeamId}, #{entity.tenantId}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.createDept})
-        </foreach>
-    </insert>
-    <!-- 批量插入或按主键更新 -->
-    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into public.teacher_training_team_student(student_id, training_team_id, tenant_id, create_by, create_time, update_by, update_time, create_dept)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.studentId}, #{entity.trainingTeamId}, #{entity.tenantId}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.createDept})
-        </foreach>
-        on duplicate key update
-         student_id = values(student_id) , tarining_team_id = values(tarining_team_id) , tenant_id = values(tenant_id) , create_by = values(create_by) , create_time = values(create_time) , update_by = values(update_by) , update_time = values(update_time) , create_dept = values(create_dept)     </insert>
-
 </mapper>
 
