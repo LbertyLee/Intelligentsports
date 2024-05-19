@@ -26,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * 训练任务表(TeacherTrainingTask)表服务实现类
@@ -53,9 +55,10 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
     private final TaskHealthMetricsService taskHealthMetricsService;
 
 
+
     @Override
     public int resetTrainingTask(Long taskId) {
-        if (log.isInfoEnabled()){
+        if (log.isInfoEnabled()) {
             log.info("TrainingTaskServiceImpl.resetTrainingTask.taskId:{}", taskId);
         }
         return taskHealthMetricsService.resetTaskHealthMetrics(taskId);
@@ -68,51 +71,73 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         }
         DetectionDataVo detectionDataVo = new DetectionDataVo();
         List<Long> studentIds = detectionDataBo.getStudentIds();
-        List<StudentInfoVo> studentInfoVoList = studentInfoService.batchSelectStudentInfoListByStudentIdList(studentIds);
-        if (ObjectUtil.isEmpty(studentInfoVoList)) {
-            return detectionDataVo;
-        }
-        //学生手环id列表
-        List<String> braceletsTotalNum = studentInfoVoList.stream().map(StudentInfoVo::getUuid).toList();
-        detectionDataVo.setBraceletsTotalNum(braceletsTotalNum.size());
-        //在线手环列表
-        List<BraceletStatusVo> braceletStatusVoList = braceletStatusService.selectBraceletList(braceletsTotalNum);
-        List<BraceletStatusVo> braceletStatusVos = braceletStatusVoList.stream()
-            .filter(braceletStatusVo -> Objects.equals(braceletStatusVo.getIsOnline(), Constants.IsOnline)).toList();
-        detectionDataVo.setBraceletsOnlineNum(braceletStatusVos.size());
-        //在线的手环的uuid
-        List<String> braceletsIdList = braceletStatusVos.stream().map(BraceletStatusVo::getUuid).toList();
-        //手环实时数据
-//        long time = System.currentTimeMillis()/1000;
-        long time = 1714585138;  //模拟时间
-        List<List<TaskHealthMetricsVo>> healthMetricsVos = healthMetricsService.selectHealthMetricsListByBraceletsIdList(braceletsIdList, time);
-        if (ObjectUtil.isEmpty(healthMetricsVos)) {
-            return detectionDataVo;
-        }
-        //最新数据
-        List<TaskHealthMetricsVo> list = healthMetricsVos.stream().map(
-            healthMetricsVoList -> {
-                TaskHealthMetricsVo taskHealthMetricsVoNew = healthMetricsVoList.get(0);
-                TaskHealthMetricsVo taskHealthMetricsVo = healthMetricsVoList.get(1);
-                //计算实时配速[实时配速=(上一秒的总距离-此时的总距离)/1s]
-                Long taskHealthMetricsVoNewTotalDistance = taskHealthMetricsVoNew.getTotalDistance();
-                Long healthMetricsVoTotalDistance = taskHealthMetricsVo.getTotalDistance();
-                taskHealthMetricsVoNew.setMatchingSpeed((taskHealthMetricsVoNewTotalDistance-healthMetricsVoTotalDistance));
-                return taskHealthMetricsVoNew;
-            }).toList();
-        detectionDataVo.setTaskHealthMetricsVoList(list);
-        if (ObjectUtil.isNotNull(list)) {
-            List<TaskHealthMetricsBo> convert = MapstructUtils.convert(list, TaskHealthMetricsBo.class);
-            if (ObjectUtil.isNotNull(convert)) {
-                List<TaskHealthMetricsBo> taskHealthMetricsBos = convert.stream().peek(
-                    taskHealthMetricsBo -> taskHealthMetricsBo.setTaskId(detectionDataBo.getTaskId())
-                ).toList();
-                taskHealthMetricsService.insertList(taskHealthMetricsBos);
+        // 创建一个固定大小的线程池
+        ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(20);
+        try {
+            // 异步获取学生信息列表
+            CompletableFuture<List<StudentInfoVo>> studentInfoFuture = CompletableFuture.supplyAsync(() ->
+                studentInfoService.batchSelectStudentInfoListByStudentIdList(studentIds), threadPoolExecutor);
+            // 获取学生信息列表
+            List<StudentInfoVo> studentInfoVoList = studentInfoFuture.get();
+            if (ObjectUtil.isEmpty(studentInfoVoList)) {
+                return detectionDataVo;
             }
+            // 获取学生手环id列表
+            List<String> braceletsTotalNum = studentInfoVoList.stream()
+                .map(StudentInfoVo::getUuid)
+                .collect(Collectors.toList());
+            detectionDataVo.setBraceletsTotalNum(braceletsTotalNum.size());
+            // 异步获取在线手环列表
+            CompletableFuture<List<BraceletStatusVo>> braceletStatusFuture = CompletableFuture.supplyAsync(() ->
+                braceletStatusService.selectBraceletList(braceletsTotalNum), threadPoolExecutor);
+            // 获取在线手环列表
+            List<BraceletStatusVo> braceletStatusVoList = braceletStatusFuture.get();
+            List<BraceletStatusVo> onlineBracelets = braceletStatusVoList.stream()
+                .filter(braceletStatusVo -> Objects.equals(braceletStatusVo.getIsOnline(), Constants.IsOnline))
+                .toList();
+            detectionDataVo.setBraceletsOnlineNum(onlineBracelets.size());
+            // 获取在线手环的UUID列表
+            List<String> onlineBraceletIds = onlineBracelets.stream()
+                .map(BraceletStatusVo::getUuid)
+                .collect(Collectors.toList());
+            // 模拟时间戳
+            long time = 1714585138;
+            // 异步获取手环实时数据
+            CompletableFuture<List<List<TaskHealthMetricsVo>>> healthMetricsFuture = CompletableFuture.supplyAsync(() ->
+                healthMetricsService.selectHealthMetricsListByBraceletsIdList(onlineBraceletIds, time), threadPoolExecutor);
+            // 获取手环实时数据
+            List<List<TaskHealthMetricsVo>> healthMetricsVos = healthMetricsFuture.get();
+            if (ObjectUtil.isEmpty(healthMetricsVos)) {
+                return detectionDataVo;
+            }
+            // 处理最新数据，计算实时配速
+            List<TaskHealthMetricsVo> latestMetrics = healthMetricsVos.stream()
+                .map(metrics -> {
+                    TaskHealthMetricsVo currentMetrics = metrics.get(0);
+                    TaskHealthMetricsVo previousMetrics = metrics.get(1);
+                    long currentDistance = currentMetrics.getTotalDistance();
+                    long previousDistance = previousMetrics.getTotalDistance();
+                    currentMetrics.setMatchingSpeed(currentDistance - previousDistance);
+                    return currentMetrics;
+                }).collect(Collectors.toList());
+            detectionDataVo.setTaskHealthMetricsVoList(latestMetrics);
+            // 异步插入处理后的健康指标数据
+            if (ObjectUtil.isNotNull(latestMetrics)) {
+                List<TaskHealthMetricsBo> metricsBoList = MapstructUtils.convert(latestMetrics, TaskHealthMetricsBo.class);
+                if (ObjectUtil.isNotNull(metricsBoList)) {
+                    metricsBoList.forEach(metricsBo -> metricsBo.setTaskId(detectionDataBo.getTaskId()));
+                    CompletableFuture.runAsync(() -> taskHealthMetricsService.insertList(metricsBoList), threadPoolExecutor).get();
+                }
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            log.error("Error in selectDetectionData: ", e);
+            Thread.currentThread().interrupt();
+        } finally {
+            threadPoolExecutor.shutdown();
         }
+
         return detectionDataVo;
     }
-
 
 
     /**
@@ -127,18 +152,20 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         if (log.isInfoEnabled()) {
             log.info("Start querying task base info by taskId, taskId:{}", taskId);
         }
-        TrainingTaskVo trainingTaskVo = null;
-        trainingTaskVo = BeanUtil.copyProperties(trainingTaskMapper.selectById(taskId), TrainingTaskVo.class);
+        // 查询训练任务信息并进行转换
+        TrainingTaskVo trainingTaskVo = BeanUtil.copyProperties(trainingTaskMapper.selectById(taskId), TrainingTaskVo.class);
         if (ObjectUtil.isNull(trainingTaskVo)) {
-            throw new ServiceException("该训练任务不存在,请输入正确的训练任务编}");
+            throw new ServiceException("该训练任务不存在，请输入正确的训练任务编号");
         }
+        // 获取学生ID列表
         List<Long> studentIdList = trainingTeamStudentService
             .selectList(new TrainingTeamStudentBo().setTrainingTeamId(trainingTaskVo.getTrainingTeamId()))
-            .stream().map(TrainingTeamStudentVo::getStudentId).toList();
-        if (ObjectUtil.isEmpty(studentIdList)) {
-            return trainingTaskVo;
+            .stream().map(TrainingTeamStudentVo::getStudentId)
+            .toList();
+        // 如果学生ID列表不为空，则设置到训练任务信息中
+        if (!ObjectUtil.isEmpty(studentIdList)) {
+            trainingTaskVo.setStudents(studentIdList);
         }
-        trainingTaskVo.setStudents(studentIdList);
         return trainingTaskVo;
     }
 
