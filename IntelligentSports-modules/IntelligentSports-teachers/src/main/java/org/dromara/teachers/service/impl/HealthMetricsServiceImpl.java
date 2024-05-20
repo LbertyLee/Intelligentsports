@@ -38,4 +38,12 @@ public class HealthMetricsServiceImpl implements HealthMetricsService {
             .toList();
     }
 
+    @Override
+    public List<TaskHealthMetricsVo> selectHealthMetricsListByBraceletsId(String braceletId, long time) {
+        if(log.isInfoEnabled()){
+            log.info("HealthMetricsServiceImpl.selectHealthMetricsListByBraceletsId.braceletId:{}",braceletId);
+        }
+        return healthMetricsMapper.selectHealthMetricsListByBraceletsId(braceletId,time);
+    }
+
 }

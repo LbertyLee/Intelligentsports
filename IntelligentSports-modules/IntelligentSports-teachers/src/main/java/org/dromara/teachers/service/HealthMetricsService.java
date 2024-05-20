@@ -13,4 +13,6 @@ public interface HealthMetricsService {
 
     List<List<TaskHealthMetricsVo>>selectHealthMetricsListByBraceletsIdList(List<String> braceletsIdList,Long time);
 
+    List<TaskHealthMetricsVo> selectHealthMetricsListByBraceletsId(String braceletId, long time);
+
 }

@@ -2,6 +2,7 @@ package org.dromara.teachers.service;
 
 
 import org.dromara.teachers.domain.bo.TaskHealthMetricsBo;
+import org.dromara.teachers.domain.vo.TaskHealthMetricsVo;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ public interface TaskHealthMetricsService  {
     void insertList(List<TaskHealthMetricsBo> taskHealthMetricsBos);
 
     int resetTaskHealthMetrics(Long taskId);
+
+    List<TaskHealthMetricsVo> selectTaskHealthMetricsList(Long taskId, String studentId);
 
 }
 

@@ -8,6 +8,7 @@
         <result property="taskId" column="task_id" jdbcType="INTEGER"/>
         <result property="timestamp" column="timestamp" jdbcType="INTEGER"/>
         <result property="totalSteps" column="total_steps" jdbcType="INTEGER"/>
+        <result property="totalDistance" column="total_distance" jdbcType="INTEGER"/>
         <result property="totalCalories" column="total_calories" jdbcType="INTEGER"/>
         <result property="heartRate" column="heart_rate" jdbcType="INTEGER"/>
         <result property="bloodPressure" column="blood_pressure" jdbcType="INTEGER"/>
@@ -19,6 +20,26 @@
         <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
+
+    <select id="selectTaskHealthMetricsVoList" resultType="org.dromara.teachers.domain.vo.TaskHealthMetricsVo">
+        SELECT DISTINCT ON (bracelet_id, task_id, timestamp)
+            a.id,
+            a.bracelet_id,
+            a.task_id,
+            a.timestamp,
+            a.total_steps,
+            a.total_calories,
+            a.total_distance,
+            a.heart_rate,
+            a.blood_pressure,
+            a.blood_oxygen,
+            a.matching_speed
+        FROM teacher_task_health_metrics as a
+        WHERE task_id = #{taskId}
+          AND bracelet_id = #{braceletId}
+        ORDER BY  a.timestamp desc;
+
+    </select>
 
 </mapper>
 

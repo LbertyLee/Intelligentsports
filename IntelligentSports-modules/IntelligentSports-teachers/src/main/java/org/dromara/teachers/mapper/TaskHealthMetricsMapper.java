@@ -1,5 +1,6 @@
 package org.dromara.teachers.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.teachers.domain.entity.TaskHealthMetrics;
 import org.dromara.teachers.domain.vo.TaskHealthMetricsVo;
@@ -16,5 +17,6 @@ import java.util.List;
 public interface TaskHealthMetricsMapper extends BaseMapperPlus<TaskHealthMetrics, TaskHealthMetricsVo> {
 
 
+    List<TaskHealthMetricsVo> selectTaskHealthMetricsVoList(@Param("taskId") Long taskId,@Param("braceletId") String braceletId);
 }
 

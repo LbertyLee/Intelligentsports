@@ -9,6 +9,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.teachers.domain.bo.TrainingTaskBo;
 import org.dromara.teachers.domain.bo.DetectionDataBo;
+import org.dromara.teachers.domain.vo.StudentTrainingTaskInfoVo;
 import org.dromara.teachers.domain.vo.TrainingTaskVo;
 import org.dromara.teachers.domain.vo.DetectionDataVo;
 import org.dromara.teachers.service.TrainingTaskService;
@@ -32,15 +33,34 @@ public class TrainingTaskController extends BaseController {
 
 
     /**
+     * 实时数据折线图
+     */
+    @GetMapping("/line/{taskId}/{braceletId}")
+    public R<List<StudentTrainingTaskInfoVo>> getLine(@PathVariable Long taskId, @PathVariable String braceletId) {
+        return R.ok(trainingTaskService.getLine(taskId, braceletId));
+    }
+    /**
+     * 查看学生个人训练任务详情
+     */
+    @GetMapping("/{taskId}/{braceletId}")
+    public R<StudentTrainingTaskInfoVo> getTrainingTask(@PathVariable Long taskId, @PathVariable String braceletId) {
+        if (log.isInfoEnabled()) {
+            log.info("TrainingTaskController.getTrainingTask.taskId:{},studentId:{}", taskId,braceletId);
+        }
+        return R.ok(trainingTaskService.getStudentTrainingTaskInfoByStudentId(taskId,braceletId));
+    }
+
+    /**
      * 重置训练任务
      */
     @GetMapping("/reset/{taskId}")
     public R<Void> resetTrainingTask(@PathVariable Long taskId) {
-        if(log.isInfoEnabled()){
-            log.info("TrainingTaskController.resetTrainingTask.taskId:{}",taskId);
+        if (log.isInfoEnabled()) {
+            log.info("TrainingTaskController.resetTrainingTask.taskId:{}", taskId);
         }
-       return toAjax(trainingTaskService.resetTrainingTask(taskId));
+        return toAjax(trainingTaskService.resetTrainingTask(taskId));
     }
+
     /**
      * 根据训练任务id查询训练任务基础数据
      */
@@ -57,11 +77,12 @@ public class TrainingTaskController extends BaseController {
      */
     @PostMapping("/detectionData")
     public R<DetectionDataVo> selectDetectionData(@RequestBody DetectionDataBo detectionDataBo) {
-        if(log.isInfoEnabled()){
-            log.info("TrainingTaskController.selectDetectionData.detectionDataBo:{}",detectionDataBo);
+        if (log.isInfoEnabled()) {
+            log.info("TrainingTaskController.selectDetectionData.detectionDataBo:{}", detectionDataBo);
         }
         return R.ok(trainingTaskService.selectDetectionData(detectionDataBo));
     }
+
     /**
      * 分页查询训练任务
      */

@@ -26,15 +26,19 @@ public class TaskHealthMetricsBo {
     //记录数据的时间戳
     private Long timestamp;
     //总步数
-    private Long totalSteps;
+    private Integer totalSteps;
+    //总距离
+    private Integer totalDistance;
+    //实时配速
+    private Integer matchingSpeed;
     //总热量消耗
-    private Long totalCalories;
+    private Integer totalCalories;
     //心率
-    private Long heartRate;
+    private Integer heartRate;
     //血压
-    private Long bloodPressure;
+    private Integer bloodPressure;
     //血氧饱和度
-    private Long bloodOxygen;
+    private Integer bloodOxygen;
 
 }
 

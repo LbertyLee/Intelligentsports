@@ -17,7 +17,7 @@ import org.dromara.teachers.domain.bo.TaskHealthMetricsBo;
 @Data
 @Accessors(chain = true)
 @AutoMapper(target = TaskHealthMetricsBo.class)
-public class TaskHealthMetricsVo extends TenantEntity {
+public class TaskHealthMetricsVo{
 
     //唯一标识
     private Long id;
@@ -38,25 +38,25 @@ public class TaskHealthMetricsVo extends TenantEntity {
     private Long timestamp;
 
     //总步数
-    private Long totalSteps;
+    private Integer totalSteps;
 
     //总距离
-    private Long totalDistance;
+    private Integer totalDistance;
 
-    //实时配速
-    private Long matchingSpeed;
+    /**实时配速*/
+    private Integer matchingSpeed;
 
     //总热量消耗
-    private Long totalCalories;
+    private Integer totalCalories;
 
     //心率
-    private Long heartRate;
+    private Integer heartRate;
 
     //血压
-    private Long bloodPressure;
+    private Integer bloodPressure;
 
     //血氧饱和度
-    private Long bloodOxygen;
+    private Integer bloodOxygen;
 
 }
 

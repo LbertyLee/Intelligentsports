@@ -96,7 +96,7 @@ public class AuthController {
 
         Long userId = LoginHelper.getUserId();
         scheduledExecutorService.schedule(() -> {
-            WebSocketUtils.sendMessage(userId, "欢迎登录IntelligentSports-Vue-Plus后台管理系统");
+            WebSocketUtils.sendMessage(userId, "欢迎登录IntelligentSports后台管理系统");
         }, 3, TimeUnit.SECONDS);
         return R.ok(loginVo);
     }

@@ -136,6 +136,7 @@ tenant:
     - sys_oss_config
     - teacher_health_metrics
     - teacher_bracelet_status
+    - teacher_task_health_metrics
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
