@@ -61,11 +61,16 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
 
     @Override
     public List<StudentTrainingTaskInfoVo> getLine(Long taskId, String braceletId) {
-
         return studentTrainingTaskInfoService.selectList(taskId, braceletId);
     }
 
-
+    /**
+     * 根据学生ID获取学生训练任务信息。
+     *
+     * @param taskId 训练任务的ID。
+     * @param braceletId 学生佩戴的腕带ID。
+     * @return 返回学生训练任务的信息汇总，包括实时和历史的健康指标。
+     */
     @Override
     @Transactional
     public StudentTrainingTaskInfoVo getStudentTrainingTaskInfoByStudentId(Long taskId, String braceletId) {
@@ -116,7 +121,12 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
     }
 
 
-
+    /**
+     * 设置学生的训练任务指标信息。
+     *
+     * @param studentTrainingTaskInfoVo 学生训练任务信息载体对象，用于接收计算后的各项指标数据。
+     * @param historyMetricsList 历史指标数据列表，用于计算各项指标的最新值和平均值、最大值。
+     */
     private void setMetrics(StudentTrainingTaskInfoVo studentTrainingTaskInfoVo, List<TaskHealthMetricsVo> historyMetricsList) {
         if (ObjectUtil.isEmpty(historyMetricsList)) {
             return;
@@ -139,11 +149,27 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         studentTrainingTaskInfoVo.setMaxHeartRate(calculateMaxMetric(historyMetricsList, TaskHealthMetricsVo::getHeartRate));
         studentTrainingTaskInfoVo.setMaxPace(calculateMaxMetric(historyMetricsList, TaskHealthMetricsVo::getMatchingSpeed));
     }
+    /**
+     * 计算给定任务健康指标列表的平均指标值。
+     *
+     * @param list 任务健康指标列表，不应为null。
+     * @param mapper 一个函数接口，用于从TaskHealthMetricsVo对象映射到int值。
+     * @return 计算得到的平均指标值，如果列表为空则返回0。
+     */
     private int calculateMetric(List<TaskHealthMetricsVo> list, ToIntFunction<TaskHealthMetricsVo> mapper) {
+        // 使用stream和mapper从列表中映射出int值，并计算平均值
         return (int) list.stream().mapToInt(mapper).average().orElse(0);
     }
 
+    /**
+     * 计算给定任务健康指标列表中最大指标值。
+     *
+     * @param list 任务健康指标列表，不应为null。
+     * @param mapper 一个函数接口，用于从TaskHealthMetricsVo对象映射到int值。
+     * @return 计算得到的最大指标值，如果列表为空则返回0。
+     */
     private int calculateMaxMetric(List<TaskHealthMetricsVo> list, ToIntFunction<TaskHealthMetricsVo> mapper) {
+        // 使用stream和mapper从列表中映射出int值，并计算最大值
         return list.stream().mapToInt(mapper).max().orElse(0);
     }
 
@@ -364,8 +390,16 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         // 根据查询条件和分页条件执行数据库查询
         Page<TrainingTaskVo> page = trainingTaskMapper
             .selectPageTrainingTaskList(pageQuery.build(), this.buildQueryWrapper(trainingTaskBo));
+        TableDataInfo<TrainingTaskVo> tableDataInfo = TableDataInfo.build(page);
+        List<TrainingTaskVo> rows = tableDataInfo.getRows();
         // 将查询结果包装成TableDataInfo对象返回
-        return TableDataInfo.build(page);
+        List<TrainingTaskVo> list = rows.stream().peek(trainingTaskVo -> {
+            Long trainingTeamId = trainingTaskVo.getTrainingTeamId();
+            List<TrainingTeamStudentVo> trainingTeamStudentVos = trainingTeamStudentService.selectList(new TrainingTeamStudentBo().setTrainingTeamId(trainingTeamId));
+            trainingTaskVo.setTrainingPeopleNumber(trainingTeamStudentVos.size());
+        }).toList();
+        tableDataInfo.setRows(list);
+        return tableDataInfo;
     }
 
 

@@ -1,9 +1,11 @@
 package org.dromara.teachers.service;
 
+import org.dromara.common.core.domain.R;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.teachers.domain.bo.TrainingTaskBo;
 import org.dromara.teachers.domain.bo.DetectionDataBo;
+import org.dromara.teachers.domain.vo.FullDetailsVo;
 import org.dromara.teachers.domain.vo.StudentTrainingTaskInfoVo;
 import org.dromara.teachers.domain.vo.TrainingTaskVo;
 import org.dromara.teachers.domain.vo.DetectionDataVo;
@@ -37,5 +39,6 @@ public interface TrainingTaskService  {
     StudentTrainingTaskInfoVo getStudentTrainingTaskInfoByStudentId(Long taskId, String braceletId);
 
     List<StudentTrainingTaskInfoVo> getLine(Long taskId, String braceletId);
+
 }
 

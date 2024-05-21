@@ -10,4 +10,6 @@ public interface StudentTrainingTaskInfoService {
 
     List<StudentTrainingTaskInfoVo> selectList(Long taskId, String braceletId);
 
+    List<StudentTrainingTaskInfoVo> selectListByTaskId(Long taskId);
+
 }

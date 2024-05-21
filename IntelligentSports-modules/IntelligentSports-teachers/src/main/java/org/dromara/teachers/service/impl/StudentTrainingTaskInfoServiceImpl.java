@@ -35,4 +35,14 @@ public class StudentTrainingTaskInfoServiceImpl implements StudentTrainingTaskIn
             .eq(StudentTrainingTaskInfo::getBraceletId, braceletId);
         return studentTrainingTaskInfoMapper.selectVoList(eq);
     }
+
+    @Override
+    public List<StudentTrainingTaskInfoVo> selectListByTaskId(Long taskId) {
+        if(log.isInfoEnabled()){
+            log.info("StudentTrainingTaskInfoServiceImpl.selectListByTaskId.taskId:{}",taskId);
+        }
+        LambdaQueryWrapper<StudentTrainingTaskInfo> eq = new LambdaQueryWrapper<StudentTrainingTaskInfo>()
+            .eq(StudentTrainingTaskInfo::getTaskId, taskId);
+        return studentTrainingTaskInfoMapper.selectVoList(eq);
+    }
 }

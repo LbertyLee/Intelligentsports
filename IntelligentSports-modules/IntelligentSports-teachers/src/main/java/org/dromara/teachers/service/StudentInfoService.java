@@ -82,5 +82,7 @@ public interface StudentInfoService  {
     List<StudentInfoVo> batchSelectStudentInfoListByStudentIdList(List<Long> studentIdList);
 
 
+    StudentInfoVo selectStudentInfoByBraceletId(String braceletId);
+
 }
 

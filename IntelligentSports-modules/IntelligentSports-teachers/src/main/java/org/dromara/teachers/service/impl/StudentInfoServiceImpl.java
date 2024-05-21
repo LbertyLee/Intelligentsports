@@ -3,6 +3,7 @@ package org.dromara.teachers.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -172,6 +173,20 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
         return MapstructUtils.convert(studentInfoMapper.selectBatchIds(studentIdList),StudentInfoVo.class);
     }
 
+    /**
+     * 根据手环ID查询学生信息。
+     *
+     * @param braceletId 手环的唯一标识符。
+     * @return 返回匹配的学生信息的视图对象（StudentInfoVo）。
+     */
+    @Override
+    public StudentInfoVo selectStudentInfoByBraceletId(String braceletId) {
+        if(log.isInfoEnabled()){
+            log.info("StudentInfoServiceImpl.selectStudentInfoByBraceletId.braceletId{}",braceletId);
+        }
+        return studentInfoMapper.selectVoOne(new LambdaQueryWrapper<StudentInfo>()
+            .eq(StudentInfo::getUuid,braceletId));
+    }
 
 
     /**
