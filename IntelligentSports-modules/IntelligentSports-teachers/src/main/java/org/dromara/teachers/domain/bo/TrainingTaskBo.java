@@ -2,6 +2,9 @@ package org.dromara.teachers.domain.bo;
 
 
 import lombok.Data;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+
+import java.util.Date;
 
 /**
  * 训练任务表(TeacherTrainingTask)表实体类
@@ -11,7 +14,7 @@ import lombok.Data;
  */
 @SuppressWarnings("serial")
 @Data
-public class TrainingTaskBo  {
+public class TrainingTaskBo  extends BaseEntity {
 
     //唯一标识
     private Long id;
@@ -33,6 +36,7 @@ public class TrainingTaskBo  {
 
     //训练时长（单位秒）
     private Long trainingTime;
+
 
 }
 

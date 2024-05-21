@@ -1,6 +1,7 @@
 package org.dromara.teachers.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -67,7 +69,7 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
     /**
      * 根据学生ID获取学生训练任务信息。
      *
-     * @param taskId 训练任务的ID。
+     * @param taskId     训练任务的ID。
      * @param braceletId 学生佩戴的腕带ID。
      * @return 返回学生训练任务的信息汇总，包括实时和历史的健康指标。
      */
@@ -125,7 +127,7 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
      * 设置学生的训练任务指标信息。
      *
      * @param studentTrainingTaskInfoVo 学生训练任务信息载体对象，用于接收计算后的各项指标数据。
-     * @param historyMetricsList 历史指标数据列表，用于计算各项指标的最新值和平均值、最大值。
+     * @param historyMetricsList        历史指标数据列表，用于计算各项指标的最新值和平均值、最大值。
      */
     private void setMetrics(StudentTrainingTaskInfoVo studentTrainingTaskInfoVo, List<TaskHealthMetricsVo> historyMetricsList) {
         if (ObjectUtil.isEmpty(historyMetricsList)) {
@@ -149,10 +151,11 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         studentTrainingTaskInfoVo.setMaxHeartRate(calculateMaxMetric(historyMetricsList, TaskHealthMetricsVo::getHeartRate));
         studentTrainingTaskInfoVo.setMaxPace(calculateMaxMetric(historyMetricsList, TaskHealthMetricsVo::getMatchingSpeed));
     }
+
     /**
      * 计算给定任务健康指标列表的平均指标值。
      *
-     * @param list 任务健康指标列表，不应为null。
+     * @param list   任务健康指标列表，不应为null。
      * @param mapper 一个函数接口，用于从TaskHealthMetricsVo对象映射到int值。
      * @return 计算得到的平均指标值，如果列表为空则返回0。
      */
@@ -164,7 +167,7 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
     /**
      * 计算给定任务健康指标列表中最大指标值。
      *
-     * @param list 任务健康指标列表，不应为null。
+     * @param list   任务健康指标列表，不应为null。
      * @param mapper 一个函数接口，用于从TaskHealthMetricsVo对象映射到int值。
      * @return 计算得到的最大指标值，如果列表为空则返回0。
      */
@@ -390,31 +393,35 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         // 根据查询条件和分页条件执行数据库查询
         Page<TrainingTaskVo> page = trainingTaskMapper
             .selectPageTrainingTaskList(pageQuery.build(), this.buildQueryWrapper(trainingTaskBo));
-        TableDataInfo<TrainingTaskVo> tableDataInfo = TableDataInfo.build(page);
-        List<TrainingTaskVo> rows = tableDataInfo.getRows();
-        // 将查询结果包装成TableDataInfo对象返回
-        List<TrainingTaskVo> list = rows.stream().peek(trainingTaskVo -> {
-            Long trainingTeamId = trainingTaskVo.getTrainingTeamId();
-            List<TrainingTeamStudentVo> trainingTeamStudentVos = trainingTeamStudentService.selectList(new TrainingTeamStudentBo().setTrainingTeamId(trainingTeamId));
-            trainingTaskVo.setTrainingPeopleNumber(trainingTeamStudentVos.size());
-        }).toList();
-        tableDataInfo.setRows(list);
-        return tableDataInfo;
+        return TableDataInfo.build(page);
     }
-
-
 
 
     private Wrapper<TrainingTask> buildQueryWrapper(TrainingTaskBo trainingTaskBo) {
         // 创建一个空的查询Wrapper
         QueryWrapper<TrainingTask> wrapper = Wrappers.query();
+        Map<String, Object> params = trainingTaskBo.getParams();
+
         // 如果团队名称不为空，则在查询中添加like条件
-        return wrapper.like(ObjectUtil.isNotNull(trainingTaskBo.getTrainingTeamName()),
-                "Training_team_name", trainingTaskBo.getTrainingTeamName())
-            .eq(ObjectUtil.isNotNull(trainingTaskBo.getExerciseTypeName()),
-                "Exercise_type_name", trainingTaskBo.getExerciseTypeName())
-            .eq(ObjectUtil.isNotNull(trainingTaskBo.getTeacherName()),
-                "Teacher_name", trainingTaskBo.getTeacherName());
+        if (ObjectUtil.isNotNull(trainingTaskBo.getTrainingTeamName())) {
+            wrapper.like("Training_team_name", trainingTaskBo.getTrainingTeamName());
+        }
+        // 如果练习类型名称不为空，则在查询中添加eq条件
+        if (ObjectUtil.isNotNull(trainingTaskBo.getExerciseTypeName())) {
+            wrapper.eq("Exercise_type_name", trainingTaskBo.getExerciseTypeName());
+        }
+        // 如果教师名称不为空，则在查询中添加eq条件
+        if (ObjectUtil.isNotNull(trainingTaskBo.getTeacherName())) {
+            wrapper.eq("Teacher_name", trainingTaskBo.getTeacherName());
+        }
+        // 如果params的大小等于2，则在查询中添加between条件
+        if (ObjectUtil.isNotNull(params.get("beginTime"))&& ObjectUtil.isNotNull(params.get("endTime"))) {
+            String beginTime = (String) params.get("beginTime");
+            String endTime = (String) params.get("endTime");
+            wrapper.between("create_time", Timestamp.valueOf(beginTime), Timestamp.valueOf(endTime));
+
+        }
+        return wrapper;
     }
 }
 

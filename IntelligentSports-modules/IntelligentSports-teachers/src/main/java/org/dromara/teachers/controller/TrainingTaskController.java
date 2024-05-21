@@ -86,15 +86,7 @@ public class TrainingTaskController extends BaseController {
     /**
      * 分页查询训练任务
      */
-    @GetMapping("/page")
-    public TableDataInfo<TrainingTaskVo> selectPageTrainingTask(TrainingTaskBo trainingTaskBo,
-                                                                PageQuery pageQuery) {
-        if (log.isInfoEnabled()) {
-            log.info("TrainingTaskController.selectPageTrainingTask.trainingTaskBo:{}", trainingTaskBo);
-            log.info("TrainingTaskController.selectPageTrainingTask.pageQuery:{}", pageQuery);
-        }
-        return trainingTaskService.selectPageTrainingTask(trainingTaskBo, pageQuery);
-    }
+
 
 
     /**

@@ -1,6 +1,7 @@
 package org.dromara.teachers.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.teachers.domain.entity.BraceletStatus;
@@ -14,6 +15,7 @@ import java.util.List;
  * @author LbertyLee
  * @since 2024-05-18 14:49:34
  */
+@Mapper
 public interface BraceletStatusMapper extends BaseMapperPlus<BraceletStatus, BraceletStatusVo> {
 
 

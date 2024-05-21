@@ -2,6 +2,7 @@ package org.dromara.system.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import org.apache.ibatis.annotations.Mapper;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
@@ -16,6 +17,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
+@Mapper
 public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
 
     /**

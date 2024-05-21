@@ -3,7 +3,12 @@ package org.dromara.teachers.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.web.core.BaseController;
+import org.dromara.teachers.domain.bo.TrainingTaskBo;
 import org.dromara.teachers.domain.vo.FullDetailsVo;
+import org.dromara.teachers.domain.vo.TrainingTaskVo;
 import org.dromara.teachers.service.TrainingReportService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,11 +19,27 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/training/report")
+@RequestMapping("/teacher/training/report")
 @RequiredArgsConstructor
-public class TrainingReportController {
+public class TrainingReportController extends BaseController {
 
     private final TrainingReportService trainingReportService;
+
+
+    /**
+     * 查看训练队列表
+     * @param trainingTaskBo
+     * @param pageQuery
+     * @return
+     */
+    @GetMapping("/page")
+    public TableDataInfo<TrainingTaskVo> selectPageTrainingTask(TrainingTaskBo trainingTaskBo,
+                                                                PageQuery pageQuery) {
+        if (log.isInfoEnabled()) {
+            log.info("TrainingReportController.selectPageTrainingTask.trainingTaskBo:{}", trainingTaskBo);
+        }
+        return trainingReportService.selectPageTrainingReport(trainingTaskBo, pageQuery);
+    }
 
 
     /**

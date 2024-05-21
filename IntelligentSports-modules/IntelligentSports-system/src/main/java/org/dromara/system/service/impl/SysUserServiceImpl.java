@@ -36,6 +36,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -82,7 +83,8 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
                 .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
                 .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
                 .between(params.get("beginTime") != null && params.get("endTime") != null,
-                        "u.create_time", params.get("beginTime"), params.get("endTime"))
+                        "u.create_time", Timestamp.valueOf((String) params.get("beginTime")),
+                    Timestamp.valueOf((String) params.get("endTime")))
                 .and(ObjectUtil.isNotNull(user.getDeptId()), w -> {
                     List<SysDept> deptList = deptMapper.selectList(new LambdaQueryWrapper<SysDept>()
                             .select(SysDept::getDeptId)

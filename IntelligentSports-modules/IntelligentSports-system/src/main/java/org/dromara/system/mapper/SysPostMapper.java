@@ -1,5 +1,6 @@
 package org.dromara.system.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysPost;
 import org.dromara.system.domain.vo.SysPostVo;
@@ -11,6 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
+@Mapper
 public interface SysPostMapper extends BaseMapperPlus<SysPost, SysPostVo> {
 
     /**

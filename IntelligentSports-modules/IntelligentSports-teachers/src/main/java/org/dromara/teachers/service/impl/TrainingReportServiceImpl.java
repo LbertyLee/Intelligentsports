@@ -2,12 +2,12 @@ package org.dromara.teachers.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.teachers.domain.vo.FullDetailsVo;
-import org.dromara.teachers.domain.vo.StudentInfoVo;
-import org.dromara.teachers.domain.vo.StudentTrainingTaskInfoVo;
-import org.dromara.teachers.service.StudentInfoService;
-import org.dromara.teachers.service.StudentTrainingTaskInfoService;
-import org.dromara.teachers.service.TrainingReportService;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.teachers.domain.bo.TrainingTaskBo;
+import org.dromara.teachers.domain.bo.TrainingTeamStudentBo;
+import org.dromara.teachers.domain.vo.*;
+import org.dromara.teachers.service.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +23,26 @@ public class TrainingReportServiceImpl implements TrainingReportService {
     private final StudentTrainingTaskInfoService studentTrainingTaskInfoService;
 
     private final StudentInfoService studentInfoService;
+
+    private final TrainingTaskService trainingTaskService;
+
+    private final TrainingTeamStudentService trainingTeamStudentService;
+
+
+    @Override
+    public TableDataInfo<TrainingTaskVo> selectPageTrainingReport(TrainingTaskBo trainingTaskBo, PageQuery pageQuery) {
+        TableDataInfo<TrainingTaskVo> trainingTaskVoTableDataInfoS = trainingTaskService.selectPageTrainingTask(trainingTaskBo, pageQuery);
+        List<TrainingTaskVo> rows = trainingTaskVoTableDataInfoS.getRows();
+        // 将查询结果包装成TableDataInfo对象返回
+        List<TrainingTaskVo> list = rows.stream().peek(trainingTaskVo -> {
+            Long trainingTeamId = trainingTaskVo.getTrainingTeamId();
+            List<TrainingTeamStudentVo> trainingTeamStudentVos = trainingTeamStudentService.selectList(new TrainingTeamStudentBo().setTrainingTeamId(trainingTeamId));
+            trainingTaskVo.setTrainingPeopleNumber(trainingTeamStudentVos.size());
+        }).toList();
+        trainingTaskVoTableDataInfoS.setRows(list);
+        return trainingTaskVoTableDataInfoS;
+    }
+
 
     /**
      * 查询全部明细报告
@@ -48,6 +68,8 @@ public class TrainingReportServiceImpl implements TrainingReportService {
         );
         return fullDetailsList;
     }
+
+
 
     private FullDetailsVo calculateSummary(List<StudentTrainingTaskInfoVo> studentTrainingTaskInfoVoList) {
         FullDetailsVo fullDetailsVo = new FullDetailsVo();
