@@ -257,7 +257,7 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
                 List<String> onlineBraceletIds = onlineBracelets.stream()
                     .map(BraceletStatusVo::getUuid)
                     .collect(Collectors.toList());
-                // 模拟时间戳
+                // todo 模拟时间戳
                 long time = 1714585138;
                 // 异步获取手环实时数据
                 List<List<TaskHealthMetricsVo>> healthMetricsVos = healthMetricsService.selectHealthMetricsListByBraceletsIdList(onlineBraceletIds, time);
@@ -376,9 +376,8 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
             log.info("TrainingTaskServiceImpl.selectOne.id:{}", id);
         }
         TrainingTask trainingTask = trainingTaskMapper.selectById(id);
-        TrainingTaskVo trainingTaskVo = BeanUtil.copyProperties(trainingTask, TrainingTaskVo.class);
-        //todo 学生数据封装
-        return trainingTaskVo;
+        return BeanUtil.copyProperties(trainingTask, TrainingTaskVo.class);
+
     }
 
     /**

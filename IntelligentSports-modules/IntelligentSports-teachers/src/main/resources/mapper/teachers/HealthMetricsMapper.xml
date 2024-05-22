@@ -36,4 +36,14 @@
             left join teacher_student_info  b on a.uuid=b.uuid
         where a.uuid=#{uuid} and a.timestamp>=#{time} order by a.timestamp desc limit 2;
     </select>
+
+    <select id="selectDataWithinTimeRange" resultType="org.dromara.teachers.domain.vo.HealthMetricsVo">
+        SELECT *
+        FROM teacher_health_metrics
+        WHERE timestamp &lt; #{endTime} AND timestamp &gt; #{startTime}
+        AND uuid IN
+        <foreach item="uuid" index="index" collection="uuids" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </select>
 </mapper>
