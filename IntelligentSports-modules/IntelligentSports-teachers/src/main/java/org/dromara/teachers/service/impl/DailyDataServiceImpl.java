@@ -29,6 +29,8 @@ public class DailyDataServiceImpl implements DailyDataService {
 
     private final BraceletStatusService braceletStatusService;
 
+    private final TrainingTeamService trainingTeamService;
+
 
     /**
      * 根据每日基础数据信息，获取每日基础数据的视图对象。
@@ -43,6 +45,10 @@ public class DailyDataServiceImpl implements DailyDataService {
                 log.info("DailyDataServiceImpl.getDailyBaseData.dailyDataBo={}", dailyDataBo);
             }
             DailyBaseDataVo dailyBaseDataVo = new DailyBaseDataVo();
+            TrainingTeamVo trainingTeamVo = trainingTeamService.selectTeacherTrainingTeamById(dailyDataBo.getTrainingTeamId());
+            dailyBaseDataVo.setTrainingTeamId(dailyDataBo.getTrainingTeamId());
+            dailyBaseDataVo.setTrainingTeamName(trainingTeamVo.getTeamName());
+            // 训练团队信息
             List<TrainingTeamStudentVo> trainingTeamStudentVos = trainingTeamStudentService
                 .selectList(new TrainingTeamStudentBo().setTrainingTeamId(dailyDataBo.getTrainingTeamId()));
             // 学生人数
@@ -60,6 +66,9 @@ public class DailyDataServiceImpl implements DailyDataService {
                 .selectDataWithinTimeRange(startTime, endTime, isOnlineBraceletsIdList);
             // 计算平均心率、平均血氧、最大心率、最大血氧、最小心率、最小血氧
             this.populateMetrics(dailyBaseDataVo, healthMetricsVos);
+
+            //计算配速
+
             return dailyBaseDataVo;
         } catch (Exception e) {
             throw new RuntimeException("Failed to process daily base data", e);

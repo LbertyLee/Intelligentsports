@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.dromara.common.tenant.core.TenantEntity;
@@ -23,6 +24,7 @@ import org.mybatis.spring.annotation.MapperScan;
 @AllArgsConstructor
 @TableName("teacher_training_team")
 @AutoMapper(target = TrainingTeamVo.class)
+@EqualsAndHashCode(callSuper=false)
 public class TrainingTeam extends TenantEntity {
 
     /**唯一标识*/

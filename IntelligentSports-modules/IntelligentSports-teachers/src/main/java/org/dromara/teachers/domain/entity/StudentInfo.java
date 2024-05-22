@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.dromara.common.tenant.core.TenantEntity;
@@ -24,6 +25,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @AutoMapper(target = StudentInfoVo.class)
 @TableName("teacher_student_info")
+@EqualsAndHashCode(callSuper=false)
 public class StudentInfo extends TenantEntity {
 
     /** 学生的唯一标识符*/

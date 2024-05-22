@@ -3,6 +3,7 @@ package org.dromara.teachers.domain.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.dromara.common.tenant.core.TenantEntity;
 
@@ -16,6 +17,7 @@ import org.dromara.common.tenant.core.TenantEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuppressWarnings("serial")
+@EqualsAndHashCode(callSuper=false)
 public class StudentPhysicalSignDataVo extends TenantEntity {
     //唯一标识
     private Integer id;

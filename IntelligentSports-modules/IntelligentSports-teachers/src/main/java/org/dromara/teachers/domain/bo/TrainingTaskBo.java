@@ -2,6 +2,7 @@ package org.dromara.teachers.domain.bo;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class TrainingTaskBo  extends BaseEntity {
 
     //唯一标识

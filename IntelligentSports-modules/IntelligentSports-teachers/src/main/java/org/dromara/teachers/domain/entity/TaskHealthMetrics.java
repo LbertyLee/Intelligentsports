@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @TableName("teacher_task_health_metrics")
+@EqualsAndHashCode(callSuper=false)
 public class TaskHealthMetrics extends TenantEntity {
     //唯一标识
     private Long id;

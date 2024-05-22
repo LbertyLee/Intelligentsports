@@ -4,12 +4,14 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.dromara.common.tenant.core.TenantEntity;
 import org.dromara.teachers.domain.vo.StudentTrainingTaskInfoVo;
 
 @Data
 @Accessors(chain = true)
+@EqualsAndHashCode(callSuper=false)
 @AutoMapper(target = StudentTrainingTaskInfoVo.class)
 @TableName("teacher_student_training_task_info")
 public class StudentTrainingTaskInfo extends TenantEntity {

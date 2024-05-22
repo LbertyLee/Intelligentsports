@@ -3,6 +3,7 @@ package org.dromara.teachers.domain.entity;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.dromara.common.tenant.core.TenantEntity;
 import org.dromara.teachers.domain.vo.StudentPhysicalSignDataVo;
@@ -18,6 +19,7 @@ import org.dromara.teachers.domain.vo.StudentPhysicalSignDataVo;
 @NoArgsConstructor
 @AutoMapper(target = StudentPhysicalSignDataVo.class)
 @SuppressWarnings("serial")
+@EqualsAndHashCode(callSuper=false)
 public class StudentPhysicalSignData extends TenantEntity {
     //唯一标识
     private Integer id;

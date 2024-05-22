@@ -142,7 +142,7 @@ public class TrainingTeamServiceImpl implements TrainingTeamService {
         if(log.isInfoEnabled()){
             log.info("selectTeacherTrainingTeamById, id: {}", id);
         }
-        return null;
+        return teacherTrainingTeamMapper.selectVoById(id);
     }
 
     @Override

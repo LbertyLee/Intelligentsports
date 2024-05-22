@@ -2,6 +2,7 @@ package org.dromara.teachers.domain.vo;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.dromara.common.tenant.core.TenantEntity;
 
 /**
@@ -11,6 +12,7 @@ import org.dromara.common.tenant.core.TenantEntity;
  * @since 2024-05-14 14:27:41
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class ExerciseTypeVo extends TenantEntity {
     //唯一标识
     private Long id;

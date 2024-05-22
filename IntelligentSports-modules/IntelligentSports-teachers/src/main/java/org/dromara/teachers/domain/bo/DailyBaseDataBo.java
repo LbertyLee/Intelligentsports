@@ -1,9 +1,11 @@
 package org.dromara.teachers.domain.bo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class DailyBaseDataBo extends BaseEntity {
 
     /**训练队ID*/
