@@ -14,9 +14,12 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.teachers.domain.bo.TrainingTeamBo;
 import org.dromara.teachers.domain.bo.TrainingTeamStudentBo;
 import org.dromara.teachers.domain.entity.TrainingTeamStudent;
+import org.dromara.teachers.domain.vo.StudentInfoVo;
+import org.dromara.teachers.domain.vo.TrainingTeamStudentVo;
 import org.dromara.teachers.domain.vo.TrainingTeamVo;
 import org.dromara.teachers.mapper.TrainingTeamMapper;
 import org.dromara.teachers.domain.entity.TrainingTeam;
+import org.dromara.teachers.service.StudentInfoService;
 import org.dromara.teachers.service.TrainingTeamService;
 import org.dromara.teachers.service.TrainingTeamStudentService;
 import org.springframework.stereotype.Service;
@@ -38,6 +41,8 @@ public class TrainingTeamServiceImpl implements TrainingTeamService {
     private final TrainingTeamMapper teacherTrainingTeamMapper;
 
     private final TrainingTeamStudentService teacherTrainingTeamStudentService;
+
+    private final StudentInfoService studentInfoService;
 
     /**
      * 添加训练队信息。
@@ -138,11 +143,16 @@ public class TrainingTeamServiceImpl implements TrainingTeamService {
     }
 
     @Override
-    public TrainingTeamVo selectTeacherTrainingTeamById(Long id) {
+    public TrainingTeamVo selectTeacherTrainingTeamById(Long teamId) {
         if(log.isInfoEnabled()){
-            log.info("selectTeacherTrainingTeamById, id: {}", id);
+            log.info("selectTeacherTrainingTeamById, teamId: {}", teamId);
         }
-        return teacherTrainingTeamMapper.selectVoById(id);
+        TrainingTeamVo trainingTeamVo = teacherTrainingTeamMapper.selectVoById(teamId);
+        List<TrainingTeamStudentVo> trainingTeamStudentVos = teacherTrainingTeamStudentService.selectList(new TrainingTeamStudentBo().setTrainingTeamId(teamId));
+        List<Long> studentIds = trainingTeamStudentVos.stream().map(TrainingTeamStudentVo::getStudentId).toList();
+        List<StudentInfoVo> studentInfoVos = studentInfoService.batchSelectStudentInfoListByStudentIdList(studentIds);
+        trainingTeamVo.setStudentList(studentInfoVos);
+        return trainingTeamVo;
     }
 
     @Override

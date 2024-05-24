@@ -41,18 +41,18 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
     /**
      * 绑定学生和手环信息
      *
-     * @param bindDraceletBo 包含学生ID和手环ID的绑定信息对象
+     * @param bindBracelet 包含学生ID和手环ID的绑定信息对象
      * @return 返回更新记录的数量，即影响的行数
      */
     @Override
-    public int bindbracelet(BindDraceletBo bindDraceletBo) {
+    public int bindbracelet(BindDraceletBo bindBracelet) {
         if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.bindbDracelet.bindDraceletBo{}",bindDraceletBo);
+            log.info("StudentInfoServiceImpl.bindbDracelet.bindDraceletBo{}",bindBracelet);
         }
         // 创建学生信息对象，并设置学生ID和手环ID
         StudentInfo studentInfo = new StudentInfo()
-            .setId(bindDraceletBo.getStudentId())
-            .setUuid(bindDraceletBo.getBraceletId());
+            .setId(bindBracelet.getStudentId())
+            .setUuid(bindBracelet.getBraceletId());
         // 根据学生信息更新数据库中的记录，并返回更新的行数
         return studentInfoMapper.updateById(studentInfo);
     }

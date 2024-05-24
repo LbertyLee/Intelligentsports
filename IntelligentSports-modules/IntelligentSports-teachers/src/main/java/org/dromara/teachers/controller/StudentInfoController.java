@@ -41,13 +41,13 @@ public class StudentInfoController extends BaseController {
     /**
      * 绑定手环信息
      *
-     * @param bindbraceletBo 包含绑定手环所需信息的请求体对象，例如学生ID和手环ID等
+     * @param bindBracelet 包含绑定手环所需信息的请求体对象，例如学生ID和手环ID等
      * @return 返回一个结果对象，如果绑定成功，则返回成功状态；如果绑定失败，则返回失败状态及错误信息
      */
     @PostMapping("/bindbracelet")
-    public R<Void> bindbracelet(@RequestBody BindDraceletBo bindbraceletBo){
+    public R<Void> bindBracelet(@RequestBody BindDraceletBo bindBracelet){
         // 调用学生信息服务进行手环绑定操作，并将操作结果转换为Ajax响应格式返回
-        return toAjax(studentInfoService.bindbracelet(bindbraceletBo));
+        return toAjax(studentInfoService.bindbracelet(bindBracelet));
     }
 
     /**

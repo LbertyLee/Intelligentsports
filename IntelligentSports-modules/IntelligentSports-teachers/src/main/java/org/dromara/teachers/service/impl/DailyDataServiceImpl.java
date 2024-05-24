@@ -3,6 +3,8 @@ package org.dromara.teachers.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.common.redis.utils.RedisUtils;
+import org.dromara.teachers.constants.CacheConstants;
 import org.dromara.teachers.constants.Constants;
 import org.dromara.teachers.domain.bo.DailyBaseDataBo;
 import org.dromara.teachers.domain.bo.TrainingTeamStudentBo;
@@ -10,6 +12,7 @@ import org.dromara.teachers.domain.vo.*;
 import org.dromara.teachers.service.*;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -31,9 +34,50 @@ public class DailyDataServiceImpl implements DailyDataService {
 
     private final TrainingTeamService trainingTeamService;
 
+    private final DailyHealthMetricsService dailyHealthMetricsService;
+
+
+    /***
+     * 统计每日数据-折线图信息。
+     */
+    @Override
+    public LineDataVo getLineData(DailyBaseDataBo dailyDataBo) {
+        //todo 获取实时数据
+
+        //todo 获取当日数据
+        // 训练团队成员信息
+        List<TrainingTeamStudentVo> trainingTeamStudentVos = this.getTrainingTeamStudentVos(dailyDataBo);
+        // 学生人数
+        List<Long> stduentsIdList = this.getBraceletsIdList(trainingTeamStudentVos);
+        List<StudentInfoVo> studentInfoVos = studentInfoService.batchSelectStudentInfoListByStudentIdList(stduentsIdList);
+        List<String> braceletsIdList = studentInfoVos.stream().map(StudentInfoVo::getUuid).toList();
+        // 每日学生健康数据
+        List<DailyHealthMetricsVo> dailyHealthMetricsVos = dailyHealthMetricsService.selectListByBraceletsIdList(braceletsIdList);
+        ArrayList<LineBloodOxygenVo> lineBloodOxygenVoArrayList = new ArrayList<>();
+        ArrayList<LineHeartRateVo> lineHeartRateVoArrayList = new ArrayList<>();
+        dailyHealthMetricsVos.forEach(
+            dailyHealthMetricsVo -> {
+                LineBloodOxygenVo lineBloodOxygenVo = new LineBloodOxygenVo().setAvgBloodOxygen(dailyHealthMetricsVo.getAvgBloodOxygen())
+                    .setMaxBloodOxygen(dailyHealthMetricsVo.getMaxBloodOxygen())
+                    .setMinBloodOxygen(dailyHealthMetricsVo.getMinBloodOxygen());
+                //将时间戳转为字符串的格式“yyyy-MM-dd hh:mm:ss”
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date(dailyHealthMetricsVo.getStatisticalTime()*1000);
+                String formattedDate = formatter.format(date);
+                lineBloodOxygenVo.setStatisticalTime(formattedDate);
+                lineBloodOxygenVoArrayList.add(lineBloodOxygenVo);
+                LineHeartRateVo lineHeartRateVo = new LineHeartRateVo().setAvgHeartRate(dailyHealthMetricsVo.getAvgHeartRate())
+                    .setMinHeartRate(dailyHealthMetricsVo.getMinHeartRate())
+                    .setMaxHeartRate(dailyHealthMetricsVo.getMaxHeartRate());
+                lineHeartRateVo.setStatisticalTime(formattedDate);
+                lineHeartRateVoArrayList.add(lineHeartRateVo);
+            }
+        );
+        return new LineDataVo().setBloodOxygenDataToDay(lineBloodOxygenVoArrayList).setHeartRateDataToDay(lineHeartRateVoArrayList);
+    }
 
     /**
-     * 根据每日基础数据信息，获取每日基础数据的视图对象。
+     * 根据每日基础数据信息
      *
      * @param dailyDataBo 每日基础数据业务对象，包含训练团队ID等信息。
      * @return DailyBaseDataVo 每日基础数据视图对象，包含学生人数、在线手环数量、以及健康指标数据。
@@ -46,11 +90,10 @@ public class DailyDataServiceImpl implements DailyDataService {
             }
             DailyBaseDataVo dailyBaseDataVo = new DailyBaseDataVo();
             TrainingTeamVo trainingTeamVo = trainingTeamService.selectTeacherTrainingTeamById(dailyDataBo.getTrainingTeamId());
-            dailyBaseDataVo.setTrainingTeamId(dailyDataBo.getTrainingTeamId());
+            dailyBaseDataVo.setTrainingTeamId(trainingTeamVo.getId());
             dailyBaseDataVo.setTrainingTeamName(trainingTeamVo.getTeamName());
-            // 训练团队信息
-            List<TrainingTeamStudentVo> trainingTeamStudentVos = trainingTeamStudentService
-                .selectList(new TrainingTeamStudentBo().setTrainingTeamId(dailyDataBo.getTrainingTeamId()));
+            // 训练团队成员信息
+            List<TrainingTeamStudentVo> trainingTeamStudentVos = this.getTrainingTeamStudentVos(dailyDataBo);
             // 学生人数
             List<Long> stduentsIdList = this.getBraceletsIdList(trainingTeamStudentVos);
             dailyBaseDataVo.setTrainingPeopleNumber(this.calculateStudentCount(trainingTeamStudentVos));
@@ -66,14 +109,19 @@ public class DailyDataServiceImpl implements DailyDataService {
                 .selectDataWithinTimeRange(startTime, endTime, isOnlineBraceletsIdList);
             // 计算平均心率、平均血氧、最大心率、最大血氧、最小心率、最小血氧
             this.populateMetrics(dailyBaseDataVo, healthMetricsVos);
-
-            //计算配速
-
+            //todo 计算配速
             return dailyBaseDataVo;
         } catch (Exception e) {
             throw new RuntimeException("Failed to process daily base data", e);
         }
     }
+
+
+    private List<TrainingTeamStudentVo> getTrainingTeamStudentVos(DailyBaseDataBo dailyDataBo) {
+        return trainingTeamStudentService
+            .selectList(new TrainingTeamStudentBo().setTrainingTeamId(dailyDataBo.getTrainingTeamId()));
+    }
+
 
     private int calculateStudentCount(List<TrainingTeamStudentVo> trainingTeamStudentVos) {
         return trainingTeamStudentVos.size();

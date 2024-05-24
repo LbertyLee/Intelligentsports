@@ -19,5 +19,5 @@ public interface HealthMetricsMapper  extends BaseMapperPlus<HealthMetrics, Heal
 
     List<HealthMetricsVo> selectDataWithinTimeRange(@Param("startTime") long startTime,
                                                     @Param("endTime") long endTime,
-                                                    @Param("uuids") List<String> isOnlineBraceletsIdList);
+                                                    @Param("uuids") List<String> uuids);
 }

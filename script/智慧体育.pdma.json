@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.7.0",
   "createdTime": "2024-5-11 23:31:50",
-  "updatedTime": "2024-5-20 17:01:21",
+  "updatedTime": "2024-5-23 17:53:35",
   "dbConns": [],
   "profile": {
     "default": {
@@ -632,7 +632,7 @@
     ],
     "DDLToggleCase": "L",
     "themeMode": "themeDay",
-    "menuWidth": "374px"
+    "menuWidth": "311px"
   },
   "entities": [
     {
@@ -2595,6 +2595,427 @@
       "correlations": [],
       "indexes": [],
       "type": "P"
+    },
+    {
+      "id": "6C425BCD-A7AA-4581-8B2B-FF7124CA0235",
+      "env": {
+        "base": {
+          "nameSpace": "",
+          "codeRoot": ""
+        }
+      },
+      "defKey": "teacher_daily_health_metrics",
+      "defName": "日常健康指标表",
+      "comment": "",
+      "properties": {
+        "partitioned by": "(date string)",
+        "row format delimited": "",
+        "fields terminated by ','": "",
+        "collection items terminated by '-'": "",
+        "map keys terminated by ':'": "",
+        "store as textfile;": ""
+      },
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      },
+      "notes": {},
+      "headers": [
+        {
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "defName",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "primaryKey",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "notNull",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "autoIncrement",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "domain",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "type",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "len",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "scale",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "comment",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "refDict",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "defaultValue",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "isStandard",
+          "freeze": false,
+          "hideInGraph": false
+        },
+        {
+          "refKey": "uiHint",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "extProps",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr1",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr2",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr3",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr4",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr5",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr6",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr7",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr8",
+          "freeze": false,
+          "hideInGraph": true
+        },
+        {
+          "refKey": "attr9",
+          "freeze": false,
+          "hideInGraph": true
+        }
+      ],
+      "fields": [
+        {
+          "defKey": "id",
+          "defName": "唯一标识",
+          "comment": "",
+          "type": "INT",
+          "len": 11,
+          "scale": "",
+          "primaryKey": true,
+          "notNull": true,
+          "autoIncrement": true,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811",
+          "extProps": {},
+          "domain": "",
+          "id": "D0A3DA82-6F3B-40F0-A0B3-2DFE94DB12E8"
+        },
+        {
+          "defKey": "bracelet_id",
+          "defName": "手环ID",
+          "comment": "",
+          "type": "VARCHAR",
+          "len": 64,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64",
+          "extProps": {},
+          "domain": "",
+          "id": "1F85E4DD-D5E9-4C44-8E8A-5733FC308941"
+        },
+        {
+          "defKey": "statistical_time",
+          "defName": "统计时间",
+          "comment": "",
+          "type": "INT",
+          "len": 11,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811",
+          "extProps": {},
+          "domain": "",
+          "id": "2F22582C-7831-4EC8-841E-24C5CBFB56EF"
+        },
+        {
+          "defKey": "max_blood_oxygen",
+          "defName": "最高血氧",
+          "comment": "",
+          "type": "INT",
+          "len": 11,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811",
+          "extProps": {},
+          "domain": "",
+          "id": "DBB5751D-608B-4E0B-A272-35F184DCC2EC"
+        },
+        {
+          "defKey": "avg_blood_oxygen",
+          "defName": "平均血氧",
+          "comment": "",
+          "type": "INT",
+          "len": 11,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811",
+          "extProps": {},
+          "domain": "",
+          "id": "32C6F7CC-F758-480F-9C4C-95AD1E766DA5"
+        },
+        {
+          "defKey": "min_blood_oxygen",
+          "defName": "最低血氧",
+          "comment": "",
+          "type": "INT",
+          "len": 11,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811",
+          "extProps": {},
+          "domain": "",
+          "id": "64C6A5D4-BDED-4BE6-B714-B310410EDAEE"
+        },
+        {
+          "defKey": "max_heart_rate",
+          "defName": "最高心率",
+          "comment": "",
+          "type": "INT",
+          "len": 11,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811",
+          "extProps": {},
+          "domain": "",
+          "id": "0A68ACDB-1EB5-46FC-B8FA-366C5A5F1AE1"
+        },
+        {
+          "defKey": "avg_heart_rate",
+          "defName": "平均心率",
+          "comment": "",
+          "type": "INT",
+          "len": 11,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811",
+          "extProps": {},
+          "domain": "",
+          "id": "77CF0E09-7AE6-4DCA-8324-73C97BDB8D90"
+        },
+        {
+          "defKey": "min_heart_rate",
+          "defName": "最低心率",
+          "comment": "",
+          "type": "INT",
+          "len": 11,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811",
+          "extProps": {},
+          "domain": "",
+          "id": "B5CF2DBE-2ADA-4DC0-ABF4-CC2CC9E09609"
+        },
+        {
+          "defKey": "create_dept",
+          "defName": "创建部门",
+          "comment": "",
+          "type": "VARCHAR",
+          "len": 255,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64",
+          "extProps": {},
+          "domain": "",
+          "id": "7975910D-9BDC-4823-8BDA-85CAC07FF738"
+        },
+        {
+          "defKey": "tenant_id",
+          "defName": "租户号",
+          "comment": "",
+          "type": "VARCHAR",
+          "len": 64,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "domain": "",
+          "refDict": "",
+          "uiHint": "",
+          "id": "FFC17634-1AA9-42B4-9D2C-D4C87234DF86",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
+        },
+        {
+          "defKey": "create_by",
+          "defName": "创建人",
+          "comment": "",
+          "domain": "",
+          "type": "VARCHAR",
+          "len": 64,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "105538B3-F90A-4A30-9CD1-FE71399105B6"
+        },
+        {
+          "defKey": "create_time",
+          "defName": "创建时间",
+          "comment": "",
+          "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "40DB724F-36EA-46DB-B31F-59BCB656FBD6"
+        },
+        {
+          "defKey": "update_by",
+          "defName": "更新人",
+          "comment": "",
+          "domain": "",
+          "type": "VARCHAR",
+          "len": 64,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "CFCFA4E4-B655-40A6-8659-6D72B7D7D5AA"
+        },
+        {
+          "defKey": "update_time",
+          "defName": "更新时间",
+          "comment": "",
+          "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": true,
+          "refDict": "",
+          "uiHint": "",
+          "id": "540EB158-1BD6-4F92-8FA9-B20F584811A5"
+        }
+      ],
+      "correlations": [],
+      "indexes": [],
+      "type": "P"
     }
   ],
   "views": [],
@@ -2609,7 +3030,8 @@
         "92DAF69F-676A-46B9-9476-1EB35B8C4758",
         "F59D4C34-2033-49CF-8C2F-B6D8671CE2AB",
         "D5269DEE-83A3-42D6-B6AC-81D81C0968AC",
-        "ECD812E0-8FC4-4A30-8E88-CFB3A986FD64"
+        "ECD812E0-8FC4-4A30-8E88-CFB3A986FD64",
+        "6C425BCD-A7AA-4581-8B2B-FF7124CA0235"
       ],
       "refViews": [],
       "refDiagrams": [],

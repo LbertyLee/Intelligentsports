@@ -41,9 +41,13 @@
         SELECT *
         FROM teacher_health_metrics
         WHERE timestamp &lt; #{endTime} AND timestamp &gt; #{startTime}
-        AND uuid IN
-        <foreach item="uuid" index="index" collection="uuids" open="(" separator="," close=")">
-            #{uuid}
-        </foreach>
+        <if test="uuids != null and uuids.size() > 0">
+            AND uuid IN
+            <foreach item="uuid" index="index" collection="uuids" open="(" separator="," close=")">
+                #{uuid}
+            </foreach>
+        </if>
+
+
     </select>
 </mapper>

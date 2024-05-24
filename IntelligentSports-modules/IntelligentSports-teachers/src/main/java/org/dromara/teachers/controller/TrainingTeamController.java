@@ -26,14 +26,14 @@ public class TrainingTeamController extends BaseController {
     /**
      * 查看训练队详情
      */
-    @GetMapping("/{id}")
-    public R<TrainingTeamVo> get(@PathVariable Long id)
+    @GetMapping("/{teamId}")
+    public R<TrainingTeamVo> get(@PathVariable Long teamId)
     {
         if(log.isInfoEnabled()){
-            log.info("TeacherTrainingTeamController.get.id={}", id);
+            log.info("TeacherTrainingTeamController.get.id={}", teamId);
         }
         // 调用服务层方法，根据ID查询训练队信息
-        return R.ok(teacherTrainingTeamService.selectTeacherTrainingTeamById(id));
+        return R.ok(teacherTrainingTeamService.selectTeacherTrainingTeamById(teamId));
     }
     /**
      * 查询训练队分页列表

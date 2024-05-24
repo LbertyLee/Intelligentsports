@@ -6,6 +6,7 @@ import org.dromara.common.core.domain.R;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.teachers.domain.bo.DailyBaseDataBo;
 import org.dromara.teachers.domain.vo.DailyBaseDataVo;
+import org.dromara.teachers.domain.vo.LineDataVo;
 import org.dromara.teachers.service.DailyDataService;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,14 @@ public class DailyDataController extends BaseController {
             log.info("DailyDataController.getDailyBaseData.dailyDataBo:{}", dailyDataBo);
         }
         return R.ok(dailyDataService.getDailyBaseData(dailyDataBo));
+    }
+
+    /**
+     * 获取折线图数据
+     */
+    @PostMapping("/line")
+    public R<LineDataVo> getLineData(@RequestBody DailyBaseDataBo dailyDataBo) {
+        return R.ok(dailyDataService.getLineData(dailyDataBo));
     }
 
 }

@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,6 +27,9 @@ public class RedisUtils {
 
     private static final RedissonClient CLIENT = SpringUtils.getBean(RedissonClient.class);
 
+    /**
+     *
+     */
     /**
      * 限流
      *
@@ -411,6 +415,8 @@ public class RedisUtils {
         rMap.put(hKey, value);
     }
 
+
+
     /**
      * 获取Hash中的数据
      *
@@ -535,4 +541,6 @@ public class RedisUtils {
         RKeys rKeys = CLIENT.getKeys();
         return rKeys.countExists(key) > 0;
     }
+
+
 }

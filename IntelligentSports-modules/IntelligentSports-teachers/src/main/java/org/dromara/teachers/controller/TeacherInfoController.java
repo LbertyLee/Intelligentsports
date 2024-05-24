@@ -3,6 +3,8 @@ package org.dromara.teachers.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.teachers.domain.bo.TeacherInfoBo;
 import org.dromara.teachers.domain.vo.TeacherInfoVo;
@@ -17,14 +19,14 @@ public class TeacherInfoController extends BaseController {
     private final TeacherInfoService teacherInfoService;
 
     /**
-     * 根据用户ID获取教师信息。
+     * 获取教师信息。
      *
-     * @param userId 教师的用户ID，通过URL路径变量传递。
      * @return 返回对应教师ID的教师信息，封装在TeacherInfoVo对象中。
      */
-    @GetMapping("/{userId}")
-    public R<TeacherInfoVo> getTeacherInfo(@PathVariable("userId") Long userId) {
-        // 通过教师ID查询并返回教师信息
+    @GetMapping
+    public R<TeacherInfoVo> getTeacherInfo() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        Long userId = loginUser.getUserId();
         return R.ok(teacherInfoService.selectTeacherInfoById(userId));
     }
 

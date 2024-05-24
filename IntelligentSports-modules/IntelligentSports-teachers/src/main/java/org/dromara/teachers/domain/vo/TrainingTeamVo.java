@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.dromara.common.tenant.core.TenantEntity;
 
+import java.util.List;
+
 /**
  * 训练队(TeacherTrainingTeam)表实体类
  *
@@ -26,6 +28,9 @@ public class TrainingTeamVo extends TenantEntity {
 
     /**训练队名*/
     private String teamName;
+
+    /**学生列表*/
+    private List<StudentInfoVo> studentList;
 
 
 }
