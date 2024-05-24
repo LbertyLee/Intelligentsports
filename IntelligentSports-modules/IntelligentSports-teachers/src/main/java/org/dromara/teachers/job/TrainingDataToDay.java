@@ -7,11 +7,10 @@ import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.teachers.domain.bo.DailyHealthMetricsBo;
 import org.dromara.teachers.domain.bo.TimeSegmentBo;
 import org.dromara.teachers.domain.vo.HealthMetricsVo;
-import org.dromara.teachers.domain.vo.LineBloodOxygenVo;
-import org.dromara.teachers.domain.vo.LineHeartRateVo;
+import org.dromara.teachers.domain.vo.LineBloodOxygenToDayVo;
+import org.dromara.teachers.domain.vo.LineHeartRateToDayVo;
 import org.dromara.teachers.service.DailyHealthMetricsService;
 import org.dromara.teachers.service.HealthMetricsService;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -57,9 +56,9 @@ public class TrainingDataToDay {
     }
 
     private void processMetrics(String uuid, List<HealthMetricsVo> metrics, long currentTime) {
-        LineBloodOxygenVo lineBloodOxygenVo = calculateBloodOxygenMetrics(metrics);
+        LineBloodOxygenToDayVo lineBloodOxygenVo = calculateBloodOxygenMetrics(metrics);
         lineBloodOxygenVo.setStatisticalTime(String.valueOf(currentTime));
-        LineHeartRateVo lineHeartRateVo = calculateHeartRateMetrics(metrics);
+        LineHeartRateToDayVo lineHeartRateVo = calculateHeartRateMetrics(metrics);
         lineHeartRateVo.setStatisticalTime(String.valueOf(currentTime));
         DailyHealthMetricsBo dailyHealthMetricsBo = new DailyHealthMetricsBo()
             .setStatisticalTime(currentTime).setAvgBloodOxygen(lineBloodOxygenVo.getAvgBloodOxygen())
@@ -73,22 +72,22 @@ public class TrainingDataToDay {
 
     }
 
-    private LineBloodOxygenVo calculateBloodOxygenMetrics(List<HealthMetricsVo> metrics) {
+    private LineBloodOxygenToDayVo calculateBloodOxygenMetrics(List<HealthMetricsVo> metrics) {
         double avg = metrics.stream().mapToDouble(HealthMetricsVo::getBloodOxygen).average().orElse(0);
         double max = metrics.stream().mapToDouble(HealthMetricsVo::getBloodOxygen).max().orElse(0);
         double min = metrics.stream().mapToDouble(HealthMetricsVo::getBloodOxygen).min().orElse(0);
-        LineBloodOxygenVo vo = new LineBloodOxygenVo();
+        LineBloodOxygenToDayVo vo = new LineBloodOxygenToDayVo();
         vo.setAvgBloodOxygen(avg);
         vo.setMaxBloodOxygen(max);
         vo.setMinBloodOxygen(min);
         return vo;
     }
 
-    private LineHeartRateVo calculateHeartRateMetrics(List<HealthMetricsVo> metrics) {
+    private LineHeartRateToDayVo calculateHeartRateMetrics(List<HealthMetricsVo> metrics) {
         double avg = metrics.stream().mapToDouble(HealthMetricsVo::getHeartRate).average().orElse(0);
         double max = metrics.stream().mapToDouble(HealthMetricsVo::getHeartRate).max().orElse(0);
         double min = metrics.stream().mapToDouble(HealthMetricsVo::getHeartRate).min().orElse(0);
-        LineHeartRateVo vo = new LineHeartRateVo();
+        LineHeartRateToDayVo vo = new LineHeartRateToDayVo();
         vo.setAvgHeartRate(avg);
         vo.setMaxHeartRate(max);
         vo.setMinHeartRate(min);

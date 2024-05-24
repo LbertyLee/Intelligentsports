@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class LineBloodOxygenVo {
+public class LineBloodOxygenRealTimeVo {
 
     /***最高血氧*/
     private Double maxBloodOxygen;

@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class LineHeartRateVo {
+public class LineHeartRateRealTimeVo {
 
     /*** 最高心率*/
     private Double maxHeartRate;

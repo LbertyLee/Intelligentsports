@@ -6,7 +6,7 @@ import lombok.Data;
 public class HealthMetricsVo {
 
     /**记录数据的时间戳*/
-    private String timestamp;
+    private Long timestamp;
     /**总步数*/
     private Long totalSteps;
     /**总热量消耗*/
