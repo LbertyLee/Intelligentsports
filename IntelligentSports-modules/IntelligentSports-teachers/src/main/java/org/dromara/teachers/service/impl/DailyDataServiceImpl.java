@@ -66,16 +66,26 @@ public class DailyDataServiceImpl implements DailyDataService {
                 .filter(vo -> vo.getTimestamp() >= start && vo.getTimestamp() < end)
                 .collect(Collectors.toList());
             if (!segment.isEmpty()) {
-                lineBloodOxygenRealTimeVos.add(createLineBloodOxygenRealTimeVo(segment, middleTime, formatter));
-                lineHeartRateRealTimeVos.add(createLineHeartRateRealTimeVo(segment, middleTime, formatter));
+                Map<String, Object> lineChartData = this.createLineChartData(segment, middleTime, formatter);
+                lineChartData.forEach(
+                    (key, value) -> {
+                        if (key.equals("lineBloodOxygenRealTimeVo")) {
+                            lineBloodOxygenRealTimeVos.add((LineBloodOxygenRealTimeVo) value);
+                        }
+                        if (key.equals("lineHeartRateRealTimeVo")) {
+                            lineHeartRateRealTimeVos.add((LineHeartRateRealTimeVo) value);
+                        }
+                    }
+                );
             }
         }
         List<DailyHealthMetricsVo> dailyHealthMetricsVos = dailyHealthMetricsService.selectListByBraceletsIdList(braceletsIdList);
+
         List<LineBloodOxygenToDayVo> lineBloodOxygenVoArrayList = dailyHealthMetricsVos.stream()
-            .map(vo -> createLineBloodOxygenToDayVo(vo, formatter))
+            .map(vo -> this.createLineBloodOxygenToDayVo(vo, formatter))
             .collect(Collectors.toList());
         List<LineHeartRateToDayVo> lineHeartRateVoArrayList = dailyHealthMetricsVos.stream()
-            .map(vo -> createLineHeartRateToDayVo(vo, formatter))
+            .map(vo -> this.createLineHeartRateToDayVo(vo, formatter))
             .collect(Collectors.toList());
         return new LineDataVo()
             .setBloodOxygenDataToDay(lineBloodOxygenVoArrayList)
@@ -84,50 +94,34 @@ public class DailyDataServiceImpl implements DailyDataService {
             .setHeartRateDataToRealTime(lineHeartRateRealTimeVos);
     }
 
-    /**
-     * 创建一个表示血氧实时数据的LineBloodOxygenRealTimeVo对象。
-     *
-     * @param segment 包含健康指标数据的列表，这些数据用于计算平均、最大和最小血氧值。
-     * @param middleTime 中间时间戳，单位为毫秒，将被格式化为日期字符串。
-     * @param formatter 用于将时间戳格式化为日期字符串的SimpleDateFormat对象。
-     * @return 返回一个配置了平均、最大、最小血氧值以及统计时间的LineBloodOxygenRealTimeVo实例。
-     */
-    private LineBloodOxygenRealTimeVo createLineBloodOxygenRealTimeVo(List<HealthMetricsVo> segment, long middleTime, SimpleDateFormat formatter) {
+    private Map<String, Object> createLineChartData(List<HealthMetricsVo> segment, long middleTime, SimpleDateFormat formatter) {
+        Map<String, Object> data = new HashMap<>();
+        String formattedDate = formatter.format(new Date(middleTime * 1000));
         double avgBloodOxygen = segment.stream().mapToDouble(HealthMetricsVo::getBloodOxygen).average().orElse(0);
         double maxBloodOxygen = segment.stream().mapToDouble(HealthMetricsVo::getBloodOxygen).max().orElse(0);
         double minBloodOxygen = segment.stream().mapToDouble(HealthMetricsVo::getBloodOxygen).min().orElse(0);
-
-        String formattedDate = formatter.format(new Date(middleTime * 1000));
-        return new LineBloodOxygenRealTimeVo()
+        double avgHeartRate = segment.stream().mapToDouble(HealthMetricsVo::getHeartRate).average().orElse(0);
+        double maxHeartRate = segment.stream().mapToDouble(HealthMetricsVo::getHeartRate).max().orElse(0);
+        double minHeartRate = segment.stream().mapToDouble(HealthMetricsVo::getHeartRate).min().orElse(0);
+        LineBloodOxygenRealTimeVo lineBloodOxygenRealTimeVo = new LineBloodOxygenRealTimeVo()
             .setAvgBloodOxygen(avgBloodOxygen)
             .setMaxBloodOxygen(maxBloodOxygen)
             .setMinBloodOxygen(minBloodOxygen)
             .setStatisticalTime(formattedDate);
-    }
-
-    /**
-     * 根据给定的健康指标数据段、中间时间戳和日期格式，创建并返回一个关于心率的实时线性统计信息对象。
-     *
-     * @param segment 包含健康指标数据的列表，这些数据用于计算平均、最大和最小心率。
-     * @param middleTime 中间时间戳，单位为毫秒，将被格式化为日期字符串。
-     * @param formatter 用于将中间时间戳格式化为日期字符串的SimpleDateFormat对象。
-     * @return 一个配置了平均心率、最大心率、最小心率和统计时间的LineHeartRateRealTimeVo对象。
-     */
-    private LineHeartRateRealTimeVo createLineHeartRateRealTimeVo(List<HealthMetricsVo> segment, long middleTime, SimpleDateFormat formatter) {
-        double avgHeartRate = segment.stream().mapToDouble(HealthMetricsVo::getHeartRate).average().orElse(0);
-        double maxHeartRate = segment.stream().mapToDouble(HealthMetricsVo::getHeartRate).max().orElse(0);
-        double minHeartRate = segment.stream().mapToDouble(HealthMetricsVo::getHeartRate).min().orElse(0);
-
-        String formattedDate = formatter.format(new Date(middleTime * 1000));
-        return new LineHeartRateRealTimeVo()
+        LineHeartRateRealTimeVo lineHeartRateRealTimeVo = new LineHeartRateRealTimeVo()
             .setAvgHeartRate(avgHeartRate)
             .setMaxHeartRate(maxHeartRate)
             .setMinHeartRate(minHeartRate)
             .setStatisticalTime(formattedDate);
+        data.put("lineBloodOxygenRealTimeVo", lineBloodOxygenRealTimeVo);
+        data.put("lineHeartRateRealTimeVo", lineHeartRateRealTimeVo);
+        return data;
     }
+
     /**
      * 根据每日健康指标数据创建血氧日至视图对象
-     * @param vo 每日健康指标数据，包含统计时间、平均血氧、最大血氧和最小血氧
+     *
+     * @param vo        每日健康指标数据，包含统计时间、平均血氧、最大血氧和最小血氧
      * @param formatter 日期格式化工具，用于将统计时间转换为指定格式的字符串
      * @return 血氧日至视图对象，包含平均血氧、最大血氧、最小血氧和统计时间（格式化后）
      */
@@ -143,7 +137,7 @@ public class DailyDataServiceImpl implements DailyDataService {
     /**
      * 根据每日健康指标数据创建线图心率日至视图对象。
      *
-     * @param vo 每日健康指标数据，包含统计时间、平均心率、最大心率和最小心率。
+     * @param vo        每日健康指标数据，包含统计时间、平均心率、最大心率和最小心率。
      * @param formatter 日期格式化工具，用于将统计时间转换为指定格式的字符串。
      * @return 线图心率日至视图对象，包含平均心率、最大心率、最小心率和统计时间（格式化后）。
      */
