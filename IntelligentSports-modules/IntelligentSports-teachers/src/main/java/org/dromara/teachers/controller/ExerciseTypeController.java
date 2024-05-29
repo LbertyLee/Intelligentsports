@@ -16,7 +16,7 @@ import org.dromara.common.core.domain.R;
 import java.util.List;
 
 /**
- * 运动类型表(TeacherExerciseType)表控制层
+ * 运动类型Controller
  *
  * @author LbertyLee
  * @since 2024-05-14 14:27:41

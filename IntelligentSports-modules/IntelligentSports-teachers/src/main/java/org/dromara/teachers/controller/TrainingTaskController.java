@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 训练任务表(TeacherTrainingTask)表控制层
+ * 训练任务Controller
  *
  * @author LbertyLee
  * @since 2024-05-15 11:18:55

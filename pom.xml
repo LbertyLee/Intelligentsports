@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.dromara</groupId>
-    <artifactId>IntelligentSports</artifactId>
+    <artifactId>IntelligentSports-service</artifactId>
     <version>${revision}</version>
 
-    <name>IntelligentSports</name>
+    <name>IntelligentSports-service</name>
     <description>IntelligentSports多租户管理系统</description>
 
     <properties>

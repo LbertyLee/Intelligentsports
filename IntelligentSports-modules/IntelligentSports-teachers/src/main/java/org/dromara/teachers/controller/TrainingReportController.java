@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 训练报告Controller
+ */
 @Slf4j
 @RestController
 @RequestMapping("/teacher/training/report")

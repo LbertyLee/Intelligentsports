@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 训练团队Controller
+ */
 @Slf4j
 @RequiredArgsConstructor
 @RestController

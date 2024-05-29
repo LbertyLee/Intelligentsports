@@ -25,7 +25,7 @@ import java.util.List;
 
 
 /**
- * (StudentInfo)表控制层
+ * 学生信息Controller
  *
  * @author LbertyLee
  * @since 2024-05-11 15:31:58

@@ -11,6 +11,10 @@ import org.dromara.teachers.domain.vo.TeacherInfoVo;
 import org.dromara.teachers.service.TeacherInfoService;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 教师信息Controller
+ *
+ */
 @RequiredArgsConstructor
 @RequestMapping("/teacher/info")
 @RestController
