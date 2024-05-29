@@ -66,7 +66,7 @@ public class SysOssController extends BaseController {
      *
      * @param file 文件
      */
-    @SaCheckPermission("system:oss:upload")
+//    @SaCheckPermission("system:oss:upload")
     @Log(title = "OSS对象存储", businessType = BusinessType.INSERT)
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public R<SysOssUploadVo> upload(@RequestPart("file") MultipartFile file) {
@@ -86,7 +86,7 @@ public class SysOssController extends BaseController {
      *
      * @param ossId OSS对象ID
      */
-    @SaCheckPermission("system:oss:download")
+//    @SaCheckPermission("system:oss:download")
     @GetMapping("/download/{ossId}")
     public void download(@PathVariable Long ossId, HttpServletResponse response) throws IOException {
         ossService.download(ossId, response);

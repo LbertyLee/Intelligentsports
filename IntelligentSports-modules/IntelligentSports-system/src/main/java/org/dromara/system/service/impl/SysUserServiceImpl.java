@@ -82,9 +82,9 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
                 .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
                 .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
                 .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
-                .between(params.get("beginTime") != null && params.get("endTime") != null,
-                        "u.create_time", Timestamp.valueOf((String) params.get("beginTime")),
-                    Timestamp.valueOf((String) params.get("endTime")))
+//                .between(params.get("beginTime") != null && params.get("endTime") != null,
+//                        "u.create_time", Timestamp.valueOf((String) params.get("beginTime")),
+//                    Timestamp.valueOf((String) params.get("endTime")))
                 .and(ObjectUtil.isNotNull(user.getDeptId()), w -> {
                     List<SysDept> deptList = deptMapper.selectList(new LambdaQueryWrapper<SysDept>()
                             .select(SysDept::getDeptId)

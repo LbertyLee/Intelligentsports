@@ -1,5 +1,6 @@
 package org.dromara.system.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysConfig;
 import org.dromara.system.domain.vo.SysConfigVo;
@@ -9,6 +10,7 @@ import org.dromara.system.domain.vo.SysConfigVo;
  *
  * @author Lion Li
  */
+@Mapper
 public interface SysConfigMapper extends BaseMapperPlus<SysConfig, SysConfigVo> {
 
 }

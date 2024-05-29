@@ -71,7 +71,8 @@ public class SysConfigServiceImpl implements ISysConfigService, ConfigService {
     @Override
     public String selectConfigByKey(String configKey) {
         SysConfig retConfig = baseMapper.selectOne(new LambdaQueryWrapper<SysConfig>()
-            .eq(SysConfig::getConfigKey, configKey));
+            .eq(SysConfig::getConfigKey, configKey)
+            .eq(SysConfig::getTenantId, TenantHelper.getTenantId()));
         if (ObjectUtil.isNotNull(retConfig)) {
             return retConfig.getConfigValue();
         }
