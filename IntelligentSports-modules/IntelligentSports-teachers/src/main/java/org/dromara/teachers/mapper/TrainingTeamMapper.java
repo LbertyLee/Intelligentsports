@@ -22,7 +22,7 @@ public interface TrainingTeamMapper extends BaseMapperPlus<TrainingTeam, Trainin
 
 
     @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id"),
+//        @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")
     })
     Page<TrainingTeamVo> selectPageTeacherTrainingTeamList(@Param("page") Page<TrainingTeam> page,

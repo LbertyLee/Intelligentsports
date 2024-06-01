@@ -6,15 +6,15 @@
 
 
     <select id="selectPageStudentInfoList" resultType="org.dromara.teachers.domain.vo.StudentInfoVo">
-        select * from student_info ${ew.getCustomSqlSegment}
+        select * from teacher_student_info ${ew.getCustomSqlSegment}
     </select>
 
     <select id="selectByStudentNumber" resultType="org.dromara.teachers.domain.entity.StudentInfo" parameterType="string">
-        select * from student_info where student_number=#{studentNumber}
+        select * from teacher_student_info where student_number=#{studentNumber}
     </select>
 
     <select id="selectStudentInfoVoList" resultType="org.dromara.teachers.domain.vo.StudentInfoVo">
-        select * from student_info ${ew.getCustomSqlSegment}
+        select * from teacher_student_info ${ew.getCustomSqlSegment}
 
     </select>
 </mapper>

@@ -352,6 +352,7 @@
         <module>IntelligentSports-common</module>
         <module>IntelligentSports-extend</module>
         <module>IntelligentSports-modules</module>
+        <module>Intelligentsports-common/Intelligentsports-common-tcp</module>
     </modules>
     <packaging>pom</packaging>
 

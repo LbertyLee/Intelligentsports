@@ -19,7 +19,7 @@ import org.dromara.teachers.domain.vo.ExerciseTypeVo;
 public interface ExerciseTypeMapper extends BaseMapperPlus<ExerciseType, ExerciseTypeVo> {
 
     @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id"),
+//        @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")
     })
     Page<ExerciseTypeVo> selectExerciseTypeVoPage(@Param("page") Page<ExerciseType> page,

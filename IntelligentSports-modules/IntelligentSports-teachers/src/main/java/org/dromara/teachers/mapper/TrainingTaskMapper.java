@@ -25,7 +25,7 @@ public interface TrainingTaskMapper extends BaseMapperPlus<TrainingTask, Trainin
 
 
     @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id"),
+//        @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")
     })
     Page<TrainingTaskVo> selectPageTrainingTaskList(@Param("page") Page<Object> page,

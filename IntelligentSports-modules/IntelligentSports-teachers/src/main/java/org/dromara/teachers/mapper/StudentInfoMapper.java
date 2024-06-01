@@ -24,7 +24,7 @@ import java.util.List;
 @Mapper
 public interface StudentInfoMapper extends BaseMapperPlus<StudentInfo,StudentInfoVo> {
     @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id"),
+//        @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")
     })
     Page<StudentInfoVo> selectPageStudentInfoList(@Param("page") Page<StudentInfo> page,

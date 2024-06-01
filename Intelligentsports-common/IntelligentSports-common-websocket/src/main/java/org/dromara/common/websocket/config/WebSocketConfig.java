@@ -25,10 +25,19 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 @EnableWebSocket
 public class WebSocketConfig {
 
+    /**
+     * 配置WebSocket处理器和拦截器。
+     *
+     * @param handshakeInterceptor 握手拦截器，用于在WebSocket连接建立时进行拦截。
+     * @param webSocketHandler WebSocket处理器，负责处理WebSocket消息。
+     * @param webSocketProperties WebSocket配置属性，包括连接路径和允许的来源等配置。
+     * @return WebSocketConfigurer 实例，用于配置WebSocket处理器和拦截器等。
+     */
     @Bean
     public WebSocketConfigurer webSocketConfigurer(HandshakeInterceptor handshakeInterceptor,
                                                    WebSocketHandler webSocketHandler,
                                                    WebSocketProperties webSocketProperties) {
+        // 设置WebSocket连接路径和允许的跨域来源，如果未配置则使用默认值
         if (StrUtil.isBlank(webSocketProperties.getPath())) {
             webSocketProperties.setPath("/websocket");
         }
@@ -43,18 +52,34 @@ public class WebSocketConfig {
             .setAllowedOrigins(webSocketProperties.getAllowedOrigins());
     }
 
+    /**
+     * 创建并返回一个WebSocket握手拦截器实例。
+     *
+     * @return HandshakeInterceptor WebSocket握手拦截器实例。
+     */
     @Bean
     public HandshakeInterceptor handshakeInterceptor() {
         return new PlusWebSocketInterceptor();
     }
 
+    /**
+     * 创建并返回一个WebSocket处理器实例。
+     *
+     * @return WebSocketHandler WebSocket处理器实例。
+     */
     @Bean
     public WebSocketHandler webSocketHandler() {
         return new PlusWebSocketHandler();
     }
 
+    /**
+     * 创建并返回一个WebSocket主题监听器实例。
+     *
+     * @return WebSocketTopicListener WebSocket主题监听器实例。
+     */
     @Bean
     public WebSocketTopicListener topicListener() {
         return new WebSocketTopicListener();
     }
+
 }
