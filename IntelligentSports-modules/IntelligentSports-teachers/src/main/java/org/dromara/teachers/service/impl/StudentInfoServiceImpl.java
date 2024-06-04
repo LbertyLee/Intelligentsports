@@ -167,7 +167,7 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
     @Override
     public List<StudentInfoVo> batchSelectStudentInfoListByStudentIdList(List<Long> studentIdList) {
         if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.batchSelectStudentInfoListByStudentIdList.studentIdList{}",studentIdList);
+            log.info("StudentInfoServiceImpl.batchSelectStudentInfoListByStudentIdList.studentIdList:{}",studentIdList);
         }
         // 调用学生信息Mapper接口，根据提供的学生ID列表批量查询学生信息
         return MapstructUtils.convert(studentInfoMapper.selectBatchIds(studentIdList),StudentInfoVo.class);

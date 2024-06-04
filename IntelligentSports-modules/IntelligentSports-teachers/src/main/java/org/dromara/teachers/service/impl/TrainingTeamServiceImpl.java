@@ -148,10 +148,15 @@ public class TrainingTeamServiceImpl implements TrainingTeamService {
             log.info("selectTeacherTrainingTeamById, teamId: {}", teamId);
         }
         TrainingTeamVo trainingTeamVo = teacherTrainingTeamMapper.selectVoById(teamId);
+        if(ObjectUtil.isEmpty(trainingTeamVo)){
+            throw new ServiceException("该训练队不存在");
+        }
         List<TrainingTeamStudentVo> trainingTeamStudentVos = teacherTrainingTeamStudentService.selectList(new TrainingTeamStudentBo().setTrainingTeamId(teamId));
         List<Long> studentIds = trainingTeamStudentVos.stream().map(TrainingTeamStudentVo::getStudentId).toList();
-        List<StudentInfoVo> studentInfoVos = studentInfoService.batchSelectStudentInfoListByStudentIdList(studentIds);
-        trainingTeamVo.setStudentList(studentInfoVos);
+        if(!studentIds.isEmpty()){
+            List<StudentInfoVo> studentInfoVos = studentInfoService.batchSelectStudentInfoListByStudentIdList(studentIds);
+            trainingTeamVo.setStudentList(studentInfoVos);
+        }
         return trainingTeamVo;
     }
 
