@@ -33,22 +33,7 @@
 
         <dependency>
             <groupId>org.dromara</groupId>
-            <artifactId>IntelligentSports-common-sms</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dromara</groupId>
-            <artifactId>IntelligentSports-common-mail</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dromara</groupId>
             <artifactId>IntelligentSports-common-redis</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dromara</groupId>
-            <artifactId>IntelligentSports-common-idempotent</artifactId>
         </dependency>
 
         <dependency>
@@ -104,6 +89,12 @@
         <dependency>
             <groupId>org.dromara</groupId>
             <artifactId>IntelligentSports-common-websocket</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.20.Final</version>
         </dependency>
 
     </dependencies>

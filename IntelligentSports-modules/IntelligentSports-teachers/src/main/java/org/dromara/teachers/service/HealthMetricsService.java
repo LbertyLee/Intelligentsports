@@ -16,4 +16,7 @@ public interface HealthMetricsService {
     List<TaskHealthMetricsVo> selectHealthMetricsListByBraceletsId(String braceletId, long time);
 
     List<HealthMetricsVo> selectDataWithinTimeRange(long startTime, long endTime, List<String> isOnlineBraceletsIdList);
+
+    void insert(String msg);
+
 }

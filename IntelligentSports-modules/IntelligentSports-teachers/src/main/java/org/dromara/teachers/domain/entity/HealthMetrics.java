@@ -1,6 +1,7 @@
 package org.dromara.teachers.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.google.gson.annotations.SerializedName;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import org.dromara.teachers.domain.vo.HealthMetricsVo;
@@ -15,6 +16,16 @@ public class HealthMetrics {
 
     /*** 主键ID*/
     private Long id;
+    /*** 手环唯一标识符*/
+    @SerializedName("wbMac")
+    private String uuid;
+    /*** 电量*/
+    @SerializedName("battery")
+    private Integer battery;
+    /*** 心率*/
+    @SerializedName("hr")
+    private Long heartRate;
+
     /*** 记录数据的时间戳*/
     private Long timestamp;
     /*** 总步数*/
@@ -29,8 +40,7 @@ public class HealthMetrics {
     private Long deepSleep;
     /*** 轻度睡眠时间*/
     private Long lightSleep;
-    /*** 心率*/
-    private Long heartRate;
+
     /*** 血压*/
     private Long bloodPressure;
     /*** 血氧饱和度*/
@@ -45,8 +55,7 @@ public class HealthMetrics {
     private Long bodyTemperature;
     /*** 血糖*/
     private Long bloodSugar;
-    /*** 手环唯一标识符*/
-    private String uuid;
+
 
 }
 

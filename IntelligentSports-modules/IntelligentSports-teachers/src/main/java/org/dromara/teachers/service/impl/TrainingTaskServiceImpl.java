@@ -93,10 +93,10 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
             studentTrainingTaskInfoVo.setRealTimeHeartRate(currentMetrics.getHeartRate());
             studentTrainingTaskInfoVo.setRealTimeBloodOxygen(currentMetrics.getBloodOxygen());
 
-            int matchingSpeed = currentMetrics.getTotalDistance() - previousMetrics.getTotalDistance();
+//            int matchingSpeed = currentMetrics.getTotalDistance() - previousMetrics.getTotalDistance();
             //设置实时配速
-            studentTrainingTaskInfoVo.setRealTimePace(matchingSpeed);
-            currentMetrics.setMatchingSpeed(matchingSpeed);
+//            studentTrainingTaskInfoVo.setRealTimePace(matchingSpeed);
+//            currentMetrics.setMatchingSpeed(matchingSpeed);
 
         } else {
             log.warn("Expected 2 elements in taskHealthMetricsVoList, but found {}", taskHealthMetricsVoList.size());
@@ -198,7 +198,7 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         if (log.isInfoEnabled()) {
             log.info("TrainingTaskServiceImpl.selectDetectionData.detectionDataBo{}", detectionDataBo);
         }
-        ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(10);
+        ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(40);
         DetectionDataVo detectionDataVo = new DetectionDataVo();
         List<Long> studentIds = detectionDataBo.getStudentIds();
         try {
@@ -212,7 +212,7 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
                     try {
                         List<StudentInfoVo> studentInfoVoList = studentInfoFuture.get();
                         if (!ObjectUtil.isEmpty(studentInfoVoList)) {
-                            processStudentInfo(studentInfoVoList, detectionDataVo, detectionDataBo.getTaskId(), threadPoolExecutor);
+                            this.processStudentInfo(studentInfoVoList, detectionDataVo, detectionDataBo.getTaskId(), threadPoolExecutor);
                         }
                     } catch (InterruptedException | ExecutionException e) {
                         log.error("Error processing student info: ", e);
@@ -248,39 +248,48 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         CompletableFuture<Void> braceletStatusFuture = CompletableFuture.runAsync(() -> {
             try {
                 // 异步获取在线手环列表
-                List<BraceletStatusVo> braceletStatusVoList = braceletStatusService.selectBraceletList(braceletsTotalNum);
-                List<BraceletStatusVo> onlineBracelets = braceletStatusVoList.stream()
-                    .filter(braceletStatusVo -> Objects.equals(braceletStatusVo.getIsOnline(), Constants.IsOnline))
-                    .toList();
-                detectionDataVo.setBraceletsOnlineNum(onlineBracelets.size());
+//                List<BraceletStatusVo> braceletStatusVoList = braceletStatusService.selectBraceletList(braceletsTotalNum);
+//                List<BraceletStatusVo> onlineBracelets = braceletStatusVoList.stream()
+//                    .filter(braceletStatusVo -> Objects.equals(braceletStatusVo.getIsOnline(), Constants.IsOnline))
+//                    .toList();
+                detectionDataVo.setBraceletsOnlineNum(braceletsTotalNum.size());
                 // 获取在线手环的UUID列表
-                List<String> onlineBraceletIds = onlineBracelets.stream()
-                    .map(BraceletStatusVo::getUuid)
-                    .collect(Collectors.toList());
-                // todo 模拟时间戳
-                long time = 1714585138;
+//                List<String> onlineBraceletIds = braceletsTotalNum.stream()
+//                    .map(BraceletStatusVo::getUuid)
+//                    .collect(Collectors.toList());
+//                long time = (System.currentTimeMillis() / 1000) - 5;
+                long time = 1717478267;
                 // 异步获取手环实时数据
-                List<List<TaskHealthMetricsVo>> healthMetricsVos = healthMetricsService.selectHealthMetricsListByBraceletsIdList(onlineBraceletIds, time);
-                if (!ObjectUtil.isEmpty(healthMetricsVos)) {
-                    // 处理最新数据，计算实时配速
+                List<List<TaskHealthMetricsVo>> healthMetricsVos = healthMetricsService
+                    .selectHealthMetricsListByBraceletsIdList(braceletsTotalNum, time);
+                if (!healthMetricsVos.get(0).isEmpty()) {
                     List<TaskHealthMetricsVo> latestMetrics = healthMetricsVos.stream()
                         .map(metrics -> {
-                            TaskHealthMetricsVo currentMetrics = metrics.get(0);
-                            TaskHealthMetricsVo previousMetrics = metrics.get(1);
-                            long currentDistance = currentMetrics.getTotalDistance();
-                            long previousDistance = previousMetrics.getTotalDistance();
-                            currentMetrics.setMatchingSpeed((int) (currentDistance - previousDistance));
+                            TaskHealthMetricsVo currentMetrics = null;
+                            TaskHealthMetricsVo previousMetrics = null;
+                            if (!metrics.isEmpty()) {
+                                currentMetrics = metrics.get(0);
+                            }
+//                            if (ObjectUtil.isNotNull(metrics.get(0)) && !ObjectUtil.isNotNull(metrics.get(1))) {
+//                                currentMetrics = metrics.get(0);
+//                                previousMetrics = metrics.get(1);
+//                            }
+                            // 计算实时配速
+//                            if (ObjectUtil.isNotNull(currentMetrics.getTotalDistance())
+//                                && ObjectUtil.isNotNull(previousMetrics.getTotalDistance())) {
+//                                long currentDistance = currentMetrics.getTotalDistance();
+//                                long previousDistance = previousMetrics.getTotalDistance();
+//                                currentMetrics.setMatchingSpeed((int) (currentDistance - previousDistance));
+//                            }
                             return currentMetrics;
                         })
                         .collect(Collectors.toList());
                     detectionDataVo.setTaskHealthMetricsVoList(latestMetrics);
                     // 异步插入处理后的健康指标数据
-                    if (ObjectUtil.isNotNull(latestMetrics)) {
+                    if (!latestMetrics.isEmpty()) {
                         List<TaskHealthMetricsBo> metricsBoList = MapstructUtils.convert(latestMetrics, TaskHealthMetricsBo.class);
-                        if (ObjectUtil.isNotNull(metricsBoList)) {
-                            metricsBoList.forEach(metricsBo -> metricsBo.setTaskId(taskId));
-                            CompletableFuture.runAsync(() -> taskHealthMetricsService.insertList(metricsBoList), threadPoolExecutor).get();
-                        }
+                        metricsBoList.forEach(metricsBo -> metricsBo.setTaskId(taskId));
+                        CompletableFuture.runAsync(() -> taskHealthMetricsService.insertList(metricsBoList), threadPoolExecutor).get();
                     }
                 }
             } catch (InterruptedException | ExecutionException e) {
@@ -337,7 +346,14 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         }
         TrainingTask trainingTask = BeanUtil.copyProperties(trainingTaskBo, TrainingTask.class);
         trainingTaskMapper.insert(trainingTask);
-        return BeanUtil.copyProperties(trainingTask, TrainingTaskVo.class);
+        //查询训练队下学生ID列表
+        Long trainingTeamId = trainingTaskBo.getTrainingTeamId();
+        List<TrainingTeamStudentVo> trainingTeamStudentVos = trainingTeamStudentService
+            .selectList(new TrainingTeamStudentBo().setTrainingTeamId(trainingTeamId));
+        List<Long> studentIdList = trainingTeamStudentVos.stream().map(TrainingTeamStudentVo::getStudentId).toList();
+        TrainingTaskVo trainingTaskVo = BeanUtil.copyProperties(trainingTask, TrainingTaskVo.class);
+        trainingTaskVo.setStudents(studentIdList);
+        return trainingTaskVo;
     }
 
     /**
@@ -414,7 +430,7 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
             wrapper.eq("Teacher_name", trainingTaskBo.getTeacherName());
         }
         // 如果params的大小等于2，则在查询中添加between条件
-        if (ObjectUtil.isNotNull(params.get("beginTime"))&& ObjectUtil.isNotNull(params.get("endTime"))) {
+        if (ObjectUtil.isNotNull(params.get("beginTime")) && ObjectUtil.isNotNull(params.get("endTime"))) {
             String beginTime = (String) params.get("beginTime");
             String endTime = (String) params.get("endTime");
             wrapper.between("create_time", Timestamp.valueOf(beginTime), Timestamp.valueOf(endTime));
