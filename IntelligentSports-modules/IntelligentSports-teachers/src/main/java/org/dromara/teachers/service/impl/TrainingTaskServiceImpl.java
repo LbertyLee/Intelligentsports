@@ -358,6 +358,13 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         // 如果学生ID列表不为空，则设置到训练任务信息中
         if (!ObjectUtil.isEmpty(studentIdList)) {
             trainingTaskVo.setStudents(studentIdList);
+            List<StudentInfoVo> studentInfoVos = studentInfoService.batchSelectStudentInfoListByStudentIdList(studentIdList);
+            List<TaskHealthMetricsVo> list = studentInfoVos.stream().map(
+                e -> {
+                    return new TaskHealthMetricsVo().setStudentId(e.getId()).setStudentName(e.getName());
+                }
+            ).toList();
+            trainingTaskVo.setStudentInfoList(list);
         }
         return trainingTaskVo;
     }

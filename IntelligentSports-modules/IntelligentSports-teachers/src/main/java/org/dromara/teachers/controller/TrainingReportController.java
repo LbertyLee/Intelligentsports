@@ -56,6 +56,9 @@ public class TrainingReportController extends BaseController {
         return R.ok(trainingReportService.getFullDetails(taskId));
     }
     /**
+     *
+     */
+    /**
      * 导出全部明细报告
      */
     @PostMapping("/exportFullDetails/{taskId}")

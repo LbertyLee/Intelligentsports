@@ -22,6 +22,8 @@ public class TrainingReportServiceImpl implements TrainingReportService {
 
     private final StudentTrainingTaskInfoService studentTrainingTaskInfoService;
 
+    private final TaskHealthMetricsService taskHealthMetricsService;
+
     private final StudentInfoService studentInfoService;
 
     private final TrainingTaskService trainingTaskService;
@@ -55,6 +57,7 @@ public class TrainingReportServiceImpl implements TrainingReportService {
         if (log.isInfoEnabled()) {
             log.info("TrainingReportServiceImpl.getFullDetailsVo.taskId={}", taskId);
         }
+//        taskHealthMetricsService.selectTaskHealthMetricsList(taskId)
         List<StudentTrainingTaskInfoVo> studentTrainingTaskInfoVoList = studentTrainingTaskInfoService.selectListByTaskId(taskId);
         if(studentTrainingTaskInfoVoList.isEmpty()){
             return new ArrayList<FullDetailsVo>();
