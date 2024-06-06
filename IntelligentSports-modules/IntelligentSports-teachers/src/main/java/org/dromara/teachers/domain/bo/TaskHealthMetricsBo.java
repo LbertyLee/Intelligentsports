@@ -39,6 +39,8 @@ public class TaskHealthMetricsBo {
     private Integer bloodPressure;
     //血氧饱和度
     private Integer bloodOxygen;
+    /**次数*/
+    private Integer number;
 
 }
 

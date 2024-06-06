@@ -56,6 +56,9 @@ public class TrainingReportServiceImpl implements TrainingReportService {
             log.info("TrainingReportServiceImpl.getFullDetailsVo.taskId={}", taskId);
         }
         List<StudentTrainingTaskInfoVo> studentTrainingTaskInfoVoList = studentTrainingTaskInfoService.selectListByTaskId(taskId);
+        if(studentTrainingTaskInfoVoList.isEmpty()){
+            return new ArrayList<FullDetailsVo>();
+        }
         Map<String, List<StudentTrainingTaskInfoVo>> collect = studentTrainingTaskInfoVoList.stream()
             .collect(Collectors.groupingBy(StudentTrainingTaskInfoVo::getBraceletId));
         List<FullDetailsVo> fullDetailsList = new ArrayList<>();

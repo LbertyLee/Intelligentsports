@@ -79,20 +79,17 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         if (log.isInfoEnabled()) {
             log.info("getStudentTrainingTaskInfoByStudentId taskId: {}, braceletId: {}", taskId, braceletId);
         }
-        long time = 1714585138L;
+        long time = (System.currentTimeMillis() / 1000) - 5;
         List<TaskHealthMetricsVo> taskHealthMetricsVoList = healthMetricsService.selectHealthMetricsListByBraceletsId(braceletId, time);
         StudentTrainingTaskInfoVo studentTrainingTaskInfoVo = new StudentTrainingTaskInfoVo();
-
         if (taskHealthMetricsVoList.size() == 2) {
             //最新数据
             TaskHealthMetricsVo currentMetrics = taskHealthMetricsVoList.get(0);
             //上一条数据
-            TaskHealthMetricsVo previousMetrics = taskHealthMetricsVoList.get(1);
-
+//            TaskHealthMetricsVo previousMetrics = taskHealthMetricsVoList.get(1);
             //设置实时心率和血氧
             studentTrainingTaskInfoVo.setRealTimeHeartRate(currentMetrics.getHeartRate());
-            studentTrainingTaskInfoVo.setRealTimeBloodOxygen(currentMetrics.getBloodOxygen());
-
+//            studentTrainingTaskInfoVo.setRealTimeBloodOxygen(currentMetrics.getBloodOxygen());
 //            int matchingSpeed = currentMetrics.getTotalDistance() - previousMetrics.getTotalDistance();
             //设置实时配速
 //            studentTrainingTaskInfoVo.setRealTimePace(matchingSpeed);
@@ -102,7 +99,6 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
             log.warn("Expected 2 elements in taskHealthMetricsVoList, but found {}", taskHealthMetricsVoList.size());
             return studentTrainingTaskInfoVo;
         }
-
         try {
             //获取学生训练任务历史信息
             List<TaskHealthMetricsVo> historyMetricsList = taskHealthMetricsService.selectTaskHealthMetricsList(taskId, braceletId);
@@ -134,22 +130,22 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
             return;
         }
         // 获取最新的两个历史信息
-        TaskHealthMetricsVo latestMetrics = historyMetricsList.get(historyMetricsList.size() - 1);
-        TaskHealthMetricsVo previousMetrics = historyMetricsList.get(historyMetricsList.size() - 2);
+//        TaskHealthMetricsVo latestMetrics = historyMetricsList.get(historyMetricsList.size() - 1);
+//        TaskHealthMetricsVo previousMetrics = historyMetricsList.get(historyMetricsList.size() - 2);
 
-        int totalDistance = latestMetrics.getTotalDistance();
-        int totalCalories = latestMetrics.getTotalCalories();
+//        int totalDistance = latestMetrics.getTotalDistance();
+//        int totalCalories = latestMetrics.getTotalCalories();
 
-        studentTrainingTaskInfoVo.setRealTimeStepNumber(totalDistance - previousMetrics.getTotalDistance());
-        studentTrainingTaskInfoVo.setBurningCalories(totalCalories - previousMetrics.getTotalCalories());
+//        studentTrainingTaskInfoVo.setRealTimeStepNumber(totalDistance - previousMetrics.getTotalDistance());
+//        studentTrainingTaskInfoVo.setBurningCalories(totalCalories - previousMetrics.getTotalCalories());
         //设置平均心率、平均血氧、平均配速
-        studentTrainingTaskInfoVo.setAverageBloodOxygen(calculateMetric(historyMetricsList, TaskHealthMetricsVo::getBloodOxygen));
+//        studentTrainingTaskInfoVo.setAverageBloodOxygen(calculateMetric(historyMetricsList, TaskHealthMetricsVo::getBloodOxygen));
         studentTrainingTaskInfoVo.setAverageHeartRate(calculateMetric(historyMetricsList, TaskHealthMetricsVo::getHeartRate));
-        studentTrainingTaskInfoVo.setAveragePace(calculateMetric(historyMetricsList, TaskHealthMetricsVo::getMatchingSpeed));
+//        studentTrainingTaskInfoVo.setAveragePace(calculateMetric(historyMetricsList, TaskHealthMetricsVo::getMatchingSpeed));
         //设置最大心率、最大血氧、最大配速
-        studentTrainingTaskInfoVo.setMaxBloodOxygen(calculateMaxMetric(historyMetricsList, TaskHealthMetricsVo::getBloodOxygen));
+//        studentTrainingTaskInfoVo.setMaxBloodOxygen(calculateMaxMetric(historyMetricsList, TaskHealthMetricsVo::getBloodOxygen));
         studentTrainingTaskInfoVo.setMaxHeartRate(calculateMaxMetric(historyMetricsList, TaskHealthMetricsVo::getHeartRate));
-        studentTrainingTaskInfoVo.setMaxPace(calculateMaxMetric(historyMetricsList, TaskHealthMetricsVo::getMatchingSpeed));
+//        studentTrainingTaskInfoVo.setMaxPace(calculateMaxMetric(historyMetricsList, TaskHealthMetricsVo::getMatchingSpeed));
     }
 
     /**
@@ -192,51 +188,85 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
     }
 
 
+    /**
+     * 异步查询检测数据。
+     * 使用CompletableFuture和线程池来实现学生信息的异步查询和处理，以提高查询效率。
+     *
+     * @param detectionDataBo 检测数据的业务对象，包含学生ID列表。
+     * @return 返回处理后的检测数据的视图对象。
+     */
     @Override
     @Transactional
     public DetectionDataVo selectDetectionData(DetectionDataBo detectionDataBo) {
+        // 日志记录输入参数
         if (log.isInfoEnabled()) {
             log.info("TrainingTaskServiceImpl.selectDetectionData.detectionDataBo{}", detectionDataBo);
         }
+        // 创建固定大小的线程池，用于执行异步任务
         ExecutorService threadPoolExecutor = Executors.newFixedThreadPool(40);
+        // 初始化返回的检测数据视图对象
         DetectionDataVo detectionDataVo = new DetectionDataVo();
+        // 获取待查询的学生ID列表
         List<Long> studentIds = detectionDataBo.getStudentIds();
         try {
+            // 异步查询学生信息，并将结果封装为CompletableFuture
             // 使用CompletableFuture来异步处理学生信息
             CompletableFuture<List<StudentInfoVo>> studentInfoFuture = CompletableFuture.supplyAsync(() ->
                 studentInfoService.batchSelectStudentInfoListByStudentIdList(studentIds), threadPoolExecutor);
+            // 创建一个CompletableFuture，用于等待所有异步任务完成
             // 使用allOf等待所有异步任务完成
             CompletableFuture<Void> allFutures = CompletableFuture.allOf(
                 studentInfoFuture,
                 CompletableFuture.runAsync(() -> {
                     try {
+                        // 获取学生信息Future的结果，即查询到的学生信息列表
                         List<StudentInfoVo> studentInfoVoList = studentInfoFuture.get();
+                        // 如果查询结果不为空，则处理学生信息
                         if (!ObjectUtil.isEmpty(studentInfoVoList)) {
-                            this.processStudentInfo(studentInfoVoList, detectionDataVo, detectionDataBo.getTaskId(), threadPoolExecutor);
+                            this.processStudentInfo(studentInfoVoList,
+                                detectionDataVo, detectionDataBo.getTaskId(),
+                                threadPoolExecutor
+                                , detectionDataBo.getNumber());
                         }
                     } catch (InterruptedException | ExecutionException e) {
+                        // 记录处理学生信息过程中的异常
                         log.error("Error processing student info: ", e);
+                        // 设置当前线程的中断状态
                         Thread.currentThread().interrupt();
                     }
                 }, threadPoolExecutor)
             );
+            // 等待所有异步任务完成
             allFutures.join(); // 非阻塞等待所有任务完成
         } finally {
+            // 关闭线程池
             // 确保线程池被关闭
             threadPoolExecutor.shutdown();
             try {
+                // 等待线程池关闭，如果在指定时间内未关闭，则记录日志
                 if (!threadPoolExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
                     log.error("Thread pool did not terminate");
                 }
             } catch (InterruptedException e) {
+                // 设置当前线程的中断状态
                 Thread.currentThread().interrupt();
             }
         }
+        // 返回处理后的检测数据视图对象
         return detectionDataVo;
     }
 
-
-    private void processStudentInfo(List<StudentInfoVo> studentInfoVoList, DetectionDataVo detectionDataVo, Long taskId, ExecutorService threadPoolExecutor) {
+    /**
+     * 处理学生信息，包括获取学生手环的状态和健康指标数据。
+     * 异步方式进行，以提高处理效率。
+     *
+     * @param studentInfoVoList  学生信息列表，包含每个学生的手环UUID。
+     * @param detectionDataVo    用于存储检测数据的vo对象，包括手环总数、在线手环数和健康指标数据。
+     * @param taskId             任务ID，用于关联健康指标数据和特定任务。
+     * @param threadPoolExecutor 线程池执行器，用于异步处理手环状态和健康指标数据的获取。
+     */
+    private void processStudentInfo(List<StudentInfoVo> studentInfoVoList, DetectionDataVo detectionDataVo, Long taskId,
+                                    ExecutorService threadPoolExecutor, Integer number) {
         if (ObjectUtil.isEmpty(studentInfoVoList)) {
             return;
         }
@@ -257,8 +287,8 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
 //                List<String> onlineBraceletIds = braceletsTotalNum.stream()
 //                    .map(BraceletStatusVo::getUuid)
 //                    .collect(Collectors.toList());
-//                long time = (System.currentTimeMillis() / 1000) - 5;
-                long time = 1717478267;
+                long time = (System.currentTimeMillis() / 1000) - 5;
+//                long time = 1717478267;
                 // 异步获取手环实时数据
                 List<List<TaskHealthMetricsVo>> healthMetricsVos = healthMetricsService
                     .selectHealthMetricsListByBraceletsIdList(braceletsTotalNum, time);
@@ -269,6 +299,7 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
                             TaskHealthMetricsVo previousMetrics = null;
                             if (!metrics.isEmpty()) {
                                 currentMetrics = metrics.get(0);
+                                currentMetrics.setNumber(number);
                             }
 //                            if (ObjectUtil.isNotNull(metrics.get(0)) && !ObjectUtil.isNotNull(metrics.get(1))) {
 //                                currentMetrics = metrics.get(0);

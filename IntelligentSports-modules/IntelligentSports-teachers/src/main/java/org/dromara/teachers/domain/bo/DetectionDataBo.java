@@ -15,4 +15,7 @@ public class DetectionDataBo {
 
     /**训练时长*/
     private Long  trainingTime;
+
+    /**次数*/
+    private Integer number;
 }
