@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -376,6 +377,8 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
             .selectList(new TrainingTeamStudentBo().setTrainingTeamId(trainingTaskVo.getTrainingTeamId()))
             .stream().map(TrainingTeamStudentVo::getStudentId)
             .toList();
+        //修改训练人数
+        trainingTaskMapper.updateById(new TrainingTask().setId(taskId).setPersonNum(studentIdList.size()));
         // 如果学生ID列表不为空，则设置到训练任务信息中
         if (!ObjectUtil.isEmpty(studentIdList)) {
             trainingTaskVo.setStudents(studentIdList);

@@ -2,6 +2,7 @@ package org.dromara.teachers.domain.vo;
 
 
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -49,7 +50,9 @@ public class TrainingTaskVo extends TenantEntity {
 
     private List<TaskHealthMetricsVo> studentInfoList;
 
-    private Integer trainingPeopleNumber;
+    /**人数*/
+    @ExcelProperty(value = "人数")
+    private Integer  personNum;
 
 
 }

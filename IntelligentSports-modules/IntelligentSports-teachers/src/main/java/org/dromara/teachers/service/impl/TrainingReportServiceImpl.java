@@ -11,6 +11,7 @@ import org.dromara.teachers.service.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ public class TrainingReportServiceImpl implements TrainingReportService {
 
     /**
      * 查询训练报告列表
+     *
      * @param trainingTaskBo
      * @param pageQuery
      * @return
@@ -45,7 +47,7 @@ public class TrainingReportServiceImpl implements TrainingReportService {
         List<TrainingTaskVo> list = rows.stream().peek(trainingTaskVo -> {
             Long trainingTeamId = trainingTaskVo.getTrainingTeamId();
             List<TrainingTeamStudentVo> trainingTeamStudentVos = trainingTeamStudentService.selectList(new TrainingTeamStudentBo().setTrainingTeamId(trainingTeamId));
-            trainingTaskVo.setTrainingPeopleNumber(trainingTeamStudentVos.size());
+            trainingTaskVo.setPersonNum(trainingTeamStudentVos.size());
         }).toList();
         trainingTaskVoTableDataInfoS.setRows(list);
         return trainingTaskVoTableDataInfoS;
@@ -53,29 +55,31 @@ public class TrainingReportServiceImpl implements TrainingReportService {
 
     /**
      * 查询学生心率明细报告
+     *
      * @param taskId
      * @return
      */
     @Override
-    public List<HeartRateDetailsVo> getHeartRate(Long taskId,String braceletId) {
+    public List<HeartRateDetailsVo> getHeartRate(Long taskId, String braceletId) {
         if (log.isInfoEnabled()) {
             log.info("TrainingReportServiceImpl.getHeartRate.taskId={}", taskId);
         }
         List<TaskHealthMetricsVo> taskHealthMetricsVos = taskHealthMetricsService.selectTaskHealthMetricsList(taskId, braceletId);
-        if(taskHealthMetricsVos.isEmpty()){
+        if (taskHealthMetricsVos.isEmpty()) {
             return new ArrayList<HeartRateDetailsVo>();
         }
+
         Map<Integer, List<TaskHealthMetricsVo>> collect = taskHealthMetricsVos.stream().collect(Collectors.groupingBy(TaskHealthMetricsVo::getNumber));
         ArrayList<HeartRateDetails> heartRateDetailsList = new ArrayList<>();
-        collect.forEach((number, studentTrainingTaskInfoVos) -> {
-            FullDetailsVo fullDetailsVo = this.calculateSummary(studentTrainingTaskInfoVos);
-            HeartRateDetails heartRateDetails = new HeartRateDetails()
-                .setAverageHeartRate(fullDetailsVo.getAverageHeartRate())
-                .setMinHeartRate(fullDetailsVo.getMinHeartRate())
-                .setMaxHeartRate(fullDetailsVo.getMaxHeartRate())
-                .setNumber(number);
-            heartRateDetailsList.add(heartRateDetails);
-        });
+//        collect.forEach((number, studentTrainingTaskInfoVos) -> {
+//            FullDetailsVo fullDetailsVo = this.calculateSummary(studentTrainingTaskInfoVos);
+//            HeartRateDetails heartRateDetails = new HeartRateDetails()
+//                .setAverageHeartRate(fullDetailsVo.getAverageHeartRate())
+//                .setMinHeartRate(fullDetailsVo.getMinHeartRate())
+//                .setMaxHeartRate(fullDetailsVo.getMaxHeartRate())
+//                .setNumber(number);
+//            heartRateDetailsList.add(heartRateDetails);
+//        });
 
         return List.of();
     }
@@ -88,42 +92,41 @@ public class TrainingReportServiceImpl implements TrainingReportService {
      * @return 明细报告列表
      */
     @Override
-    public List<FullDetailsVo> getFullDetails(Long taskId) {
+    public FullDetailsVo getFullDetails(Long taskId) {
         if (log.isInfoEnabled()) {
             log.info("TrainingReportServiceImpl.getFullDetailsVo.taskId={}", taskId);
         }
         List<TaskHealthMetricsVo> taskHealthMetricsVos = taskHealthMetricsService.selectTaskHealthMetricsList(taskId);
-        if(taskHealthMetricsVos.isEmpty()){
-            return new ArrayList<FullDetailsVo>();
+        if (taskHealthMetricsVos.isEmpty()) {
+            return new FullDetailsVo();
         }
-        List<FullDetailsVo> fullDetailsList = new ArrayList<>();
-        Map<String, List<TaskHealthMetricsVo>> collect1 = taskHealthMetricsVos.stream().collect(Collectors.groupingBy(TaskHealthMetricsVo::getBraceletId));
-        collect1.forEach((braceletId, studentTrainingTaskInfoVos) -> {
-                FullDetailsVo fullDetailsVo = this.calculateSummary(studentTrainingTaskInfoVos);
+        //训练任务基础信息
+        TrainingTaskVo trainingTaskVo = trainingTaskService.selectOne(taskId);
+        FullDetailsVo fullDetailsVo = new FullDetailsVo();
+        fullDetailsVo.setTrainingName(trainingTaskVo.getTrainingTeamName())
+            .setTeacherName(trainingTaskVo.getTeacherName())
+            .setTeacherName(trainingTaskVo.getTeacherName())
+            .setTrainingType(trainingTaskVo.getExerciseTypeName())
+            .setTrainingDate(trainingTaskVo.getCreateTime())
+            .setPersonNum(trainingTaskVo.getPersonNum());
+
+        //训练任务学生数据
+        Map<String, List<TaskHealthMetricsVo>> fullDetailsMap = taskHealthMetricsVos.stream()
+            .collect(Collectors.groupingBy(TaskHealthMetricsVo::getBraceletId));
+        ArrayList<FullDetailsInfoVo> fullDetailsList = new ArrayList<>();
+        fullDetailsMap.forEach((braceletId, studentTrainingTaskInfoVos) -> {
+                FullDetailsInfoVo fullDetailsInfoVo = this.calculateSummary(studentTrainingTaskInfoVos);
                 StudentInfoVo studentInfoVo = studentInfoService.selectStudentInfoByBraceletId(braceletId);
-                fullDetailsVo.setStudentName(studentInfoVo.getName());
-                fullDetailsList.add(fullDetailsVo);
+                fullDetailsInfoVo.setStudentName(studentInfoVo.getName());
+                fullDetailsList.add(fullDetailsInfoVo);
             }
         );
-//        List<StudentTrainingTaskInfoVo> studentTrainingTaskInfoVoList = studentTrainingTaskInfoService.selectListByTaskId(taskId);
-//        if(studentTrainingTaskInfoVoList.isEmpty()){
-//            return new ArrayList<FullDetailsVo>();
-//        }
-//        Map<String, List<StudentTrainingTaskInfoVo>> collect = studentTrainingTaskInfoVoList.stream()
-//            .collect(Collectors.groupingBy(StudentTrainingTaskInfoVo::getBraceletId));
-//
-//        collect.forEach((braceletId, studentTrainingTaskInfoVos) -> {
-//                FullDetailsVo fullDetailsVo = this.calculateSummary(studentTrainingTaskInfoVos);
-//                StudentInfoVo studentInfoVo = studentInfoService.selectStudentInfoByBraceletId(braceletId);
-//                fullDetailsVo.setStudentName(studentInfoVo.getName());
-//                fullDetailsList.add(fullDetailsVo);
-//            }
-//        );
-        return fullDetailsList;
+        fullDetailsVo.setFullDetailsReportVoList(fullDetailsList);
+        return fullDetailsVo;
     }
 
-    private FullDetailsVo calculateSummary(List<TaskHealthMetricsVo> studentTrainingTaskInfoVoList) {
-        FullDetailsVo fullDetailsVo = new FullDetailsVo();
+    private FullDetailsInfoVo calculateSummary(List<TaskHealthMetricsVo> studentTrainingTaskInfoVoList) {
+        FullDetailsInfoVo fullDetailsInfoVo = new FullDetailsInfoVo();
 //        double averageBloodOxygen = studentTrainingTaskInfoVoList.stream()
 //            .mapToDouble(StudentTrainingTaskInfoVo::getAverageBloodOxygen)
 //            .average()
@@ -134,7 +137,7 @@ public class TrainingReportServiceImpl implements TrainingReportService {
             .mapToDouble(TaskHealthMetricsVo::getHeartRate)
             .average()
             .orElse(0);
-        fullDetailsVo.setAverageHeartRate(averageHeartRate);
+        fullDetailsInfoVo.setAverageHeartRate(averageHeartRate);
 //        double averagePace = studentTrainingTaskInfoVoList.stream()
 //            .mapToDouble(StudentTrainingTaskInfoVo::getAveragePace)
 //            .average()
@@ -150,18 +153,18 @@ public class TrainingReportServiceImpl implements TrainingReportService {
             .mapToDouble(TaskHealthMetricsVo::getHeartRate)
             .max()
             .orElse(Double.MIN_VALUE);
-        fullDetailsVo.setMaxHeartRate(maxHeartRate);
+        fullDetailsInfoVo.setMaxHeartRate(maxHeartRate);
         //最低心率
         double minHeartRate = studentTrainingTaskInfoVoList.stream()
             .mapToDouble(TaskHealthMetricsVo::getHeartRate)
             .min()
             .orElse(Double.MAX_VALUE);
-        fullDetailsVo.setMinHeartRate(minHeartRate);
+        fullDetailsInfoVo.setMinHeartRate(minHeartRate);
 //        double maxPace = studentTrainingTaskInfoVoList.stream()
 //            .mapToDouble(StudentTrainingTaskInfoVo::getMaxPace)
 //            .max()
 //            .orElse(Double.MIN_VALUE);
 //        fullDetailsVo.setMaxPace(maxPace);
-        return fullDetailsVo;
+        return fullDetailsInfoVo;
     }
 }

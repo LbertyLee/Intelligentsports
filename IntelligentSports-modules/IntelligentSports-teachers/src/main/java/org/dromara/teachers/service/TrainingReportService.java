@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface TrainingReportService {
 
-    List<FullDetailsVo> getFullDetails(Long taskId);
+    FullDetailsVo getFullDetails(Long taskId);
 
     TableDataInfo<TrainingTaskVo> selectPageTrainingReport(TrainingTaskBo trainingTaskBo, PageQuery pageQuery);
 

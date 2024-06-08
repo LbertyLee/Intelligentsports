@@ -50,7 +50,7 @@ public class TrainingReportController extends BaseController {
      * 查看训练报告-全部明细
      */
     @GetMapping("/fullDetails/{taskId}")
-    public R<List<FullDetailsVo>> getFullDetailsVo(@PathVariable Long taskId) {
+    public R<FullDetailsVo> getFullDetailsVo(@PathVariable Long taskId) {
         if(log.isInfoEnabled()){
             log.info("TrainingReportController.getFullDetailsVo.taskId={}", taskId);
         }
@@ -76,8 +76,8 @@ public class TrainingReportController extends BaseController {
      */
     @PostMapping("/exportFullDetails/{taskId}")
     public void exportFullDetails( HttpServletResponse response, @PathVariable Long taskId){
-        List<FullDetailsVo> fullDetails = trainingReportService.getFullDetails(taskId);
-        ExcelUtil.exportExcel(fullDetails, "全部明细报告", FullDetailsVo.class, response);
+        FullDetailsVo fullDetails = trainingReportService.getFullDetails(taskId);
+//        ExcelUtil.exportExcel(fullDetails, "全部明细报告", FullDetailsVo.class, response);
     }
 
 
