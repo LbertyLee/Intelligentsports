@@ -48,6 +48,7 @@ public class TCPClientHandler extends SimpleChannelInboundHandler<String> {
         HealthMetrics[] healthMetrics = gson.fromJson(msg, HealthMetrics[].class);
         List<HealthMetrics> list = Arrays.asList(healthMetrics);
         HealthMetrics healthMetrics1 = list.get(0);
+        log.info("开始获取实时数据");
         if(!ObjectUtil.isEmpty(healthMetrics1.getUuid())){
             healthMetricsService.insert(msg);
         }

@@ -13,7 +13,9 @@ import org.dromara.teachers.service.TaskHealthMetricsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -48,10 +50,24 @@ public class HealthMetricsServiceImpl implements HealthMetricsService {
         if (log.isInfoEnabled()) {
             log.info("HealthMetricsServiceImpl.selectHealthMetricsListByBraceletsIdList.braceletsIdList:{}", braceletsIdList);
         }
+
         // 通过流处理每个手环ID，查询其对应的健康指标数据，并收集到一个列表中
         return braceletsIdList.stream()
             .map(bracelet -> healthMetricsMapper.selectHealthMetricsListByBraceletsId(bracelet, time))
             .toList();
+    }
+
+    @Override
+    public Map<String, List<TaskHealthMetricsVo>> selectHealthMetricsMapByBraceletsIdList(List<String> braceletsTotalNum, long time) {
+        if (log.isInfoEnabled()) {
+            log.info("HealthMetricsServiceImpl.selectHealthMetricsMapByBraceletsIdList.braceletsIdList:{}", braceletsTotalNum);
+        }
+        HashMap<String, List<TaskHealthMetricsVo>> stringListHashMap = new HashMap<>();
+        for (String braceletId : braceletsTotalNum){
+            List<TaskHealthMetricsVo> taskHealthMetricsVos = healthMetricsMapper.selectHealthMetricsListByBraceletsId(braceletId, time);
+            stringListHashMap.put(braceletId, taskHealthMetricsVos);
+        }
+        return stringListHashMap;
     }
 
     /**
@@ -97,6 +113,8 @@ public class HealthMetricsServiceImpl implements HealthMetricsService {
         // 调用healthMetricsMapper的insertBatch方法，将处理后的HealthMetrics对象列表批量插入数据库
         healthMetricsMapper.insertBatch(list);
     }
+
+
 
 
 }

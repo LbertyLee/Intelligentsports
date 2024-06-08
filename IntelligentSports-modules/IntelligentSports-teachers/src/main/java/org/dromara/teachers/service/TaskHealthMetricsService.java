@@ -18,7 +18,11 @@ public interface TaskHealthMetricsService  {
 
     int resetTaskHealthMetrics(Long taskId);
 
+
     List<TaskHealthMetricsVo> selectTaskHealthMetricsList(Long taskId, String studentId);
+
+
+    List<TaskHealthMetricsVo> selectTaskHealthMetricsList(Long taskId);
 
 }
 

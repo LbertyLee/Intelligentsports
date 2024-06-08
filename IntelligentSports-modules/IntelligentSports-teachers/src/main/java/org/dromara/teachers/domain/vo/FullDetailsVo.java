@@ -3,6 +3,9 @@ package org.dromara.teachers.domain.vo;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
+/**
+ * 全部明细报告
+ */
 @Data
 public class FullDetailsVo {
 
@@ -28,5 +31,9 @@ public class FullDetailsVo {
     /**最高血氧*/
     @ExcelProperty(value = "最高血氧")
     private double maxBloodOxygen;
+
+    /**最低心率*/
+    @ExcelProperty(value = "最低心率")
+    private double minHeartRate;
 
 }

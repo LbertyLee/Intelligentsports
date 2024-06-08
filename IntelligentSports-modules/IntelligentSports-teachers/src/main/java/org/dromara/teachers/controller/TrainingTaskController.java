@@ -39,6 +39,7 @@ public class TrainingTaskController extends BaseController {
     public R<List<StudentTrainingTaskInfoVo>> getLine(@PathVariable Long taskId, @PathVariable String braceletId) {
         return R.ok(trainingTaskService.getLine(taskId, braceletId));
     }
+
     /**
      * 查看学生个人训练任务详情
      */
@@ -82,11 +83,6 @@ public class TrainingTaskController extends BaseController {
         }
         return R.ok(trainingTaskService.selectDetectionData(detectionDataBo));
     }
-
-    /**
-     * 分页查询训练任务
-     */
-
 
 
     /**

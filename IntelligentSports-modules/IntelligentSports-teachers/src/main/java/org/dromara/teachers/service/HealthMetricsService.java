@@ -6,6 +6,7 @@ import org.dromara.teachers.domain.vo.HealthMetricsVo;
 import org.dromara.teachers.domain.vo.TaskHealthMetricsVo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface HealthMetricsService {
 
@@ -19,4 +20,5 @@ public interface HealthMetricsService {
 
     void insert(String msg);
 
+    Map<String, List<TaskHealthMetricsVo>> selectHealthMetricsMapByBraceletsIdList(List<String> braceletsTotalNum, long time);
 }

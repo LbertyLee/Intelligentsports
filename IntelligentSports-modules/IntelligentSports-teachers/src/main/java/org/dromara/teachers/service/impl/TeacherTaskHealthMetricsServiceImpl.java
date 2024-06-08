@@ -64,5 +64,12 @@ public class TeacherTaskHealthMetricsServiceImpl implements TaskHealthMetricsSer
         }
         return taskHealthMetricsMapper.selectTaskHealthMetricsVoList(taskId,braceletId);
     }
+
+    @Override
+    public List<TaskHealthMetricsVo> selectTaskHealthMetricsList(Long taskId) {
+        List<TaskHealthMetrics> taskHealthMetrics = taskHealthMetricsMapper.selectList(new LambdaQueryWrapper<TaskHealthMetrics>().eq(TaskHealthMetrics::getTaskId, taskId));
+//        taskHealthMetrics.stream().
+        return List.of();
+    }
 }
 

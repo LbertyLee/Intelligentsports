@@ -60,5 +60,9 @@ public class TaskHealthMetricsVo{
     /**次数*/
     private Integer number;
 
+    /**电量*/
+    private Integer battery;
+
+
 }
 

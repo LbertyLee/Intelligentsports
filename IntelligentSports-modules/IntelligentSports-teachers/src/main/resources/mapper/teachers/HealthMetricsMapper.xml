@@ -5,6 +5,7 @@
     <resultMap id="taskHealthMetricsMap" type="org.dromara.teachers.domain.vo.TaskHealthMetricsVo">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="studentId" column="student_id" jdbcType="INTEGER"/>
+        <result property="battery" column="battery" jdbcType="INTEGER"/>
         <result property="studentName" column="student_name" jdbcType="VARCHAR"/>
         <result property="braceletId" column="bracelet_id" jdbcType="VARCHAR"/>
         <result property="timestamp" column="timestamp" jdbcType="INTEGER"/>
@@ -31,7 +32,8 @@
             a.total_distance,
             a.heart_rate,
             a.blood_pressure,
-            a.blood_oxygen
+            a.blood_oxygen,
+            a.battery
         from teacher_health_metrics a
             left join teacher_student_info  b on a.uuid=b.uuid
         where a.uuid=#{uuid} and a.timestamp>=#{time} order by a.timestamp desc limit 2;

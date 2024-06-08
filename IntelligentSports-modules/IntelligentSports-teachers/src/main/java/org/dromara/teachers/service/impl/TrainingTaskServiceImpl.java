@@ -290,40 +290,61 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
                 long time = (System.currentTimeMillis() / 1000) - 5;
 //                long time = 1717478267;
                 // 异步获取手环实时数据
-                List<List<TaskHealthMetricsVo>> healthMetricsVos = healthMetricsService
-                    .selectHealthMetricsListByBraceletsIdList(braceletsTotalNum, time);
-                if (!healthMetricsVos.get(0).isEmpty()) {
-                    List<TaskHealthMetricsVo> latestMetrics = healthMetricsVos.stream()
-                        .map(metrics -> {
-                            TaskHealthMetricsVo currentMetrics = null;
-                            TaskHealthMetricsVo previousMetrics = null;
-                            if (!metrics.isEmpty()) {
-                                currentMetrics = metrics.get(0);
-                                currentMetrics.setNumber(number);
-                            }
+                Map<String, List<TaskHealthMetricsVo>> healthMetricsVoMap = healthMetricsService
+                    .selectHealthMetricsMapByBraceletsIdList(braceletsTotalNum, time);
+                List<TaskHealthMetricsVo> taskHealthMetricsVoArrayList = new ArrayList<>();
+                healthMetricsVoMap.forEach(
+                    (braceletsId, healthMetricsVoList) -> {
+                        TaskHealthMetricsVo currentMetrics = new TaskHealthMetricsVo();
+                        if (!healthMetricsVoList.isEmpty()) {
+                            currentMetrics = healthMetricsVoList.get(0);
+                            taskHealthMetricsVoArrayList.add(currentMetrics);
+                        }
+                    }
+                );
+                detectionDataVo.setTaskHealthMetricsVoList(taskHealthMetricsVoArrayList);
+                if (!taskHealthMetricsVoArrayList.isEmpty()) {
+                    List<TaskHealthMetricsBo> metricsBoList = MapstructUtils.convert(taskHealthMetricsVoArrayList, TaskHealthMetricsBo.class);
+                    metricsBoList.forEach(metricsBo -> metricsBo.setTaskId(taskId));
+                    CompletableFuture.runAsync(() -> taskHealthMetricsService.insertList(metricsBoList), threadPoolExecutor).get();
+                }
+//                List<List<TaskHealthMetricsVo>> healthMetricsVos = healthMetricsService
+//                    .selectHealthMetricsListByBraceletsIdList(braceletsTotalNum, time);
+//                if (!healthMetricsVos.isEmpty()) {
+//                    List<TaskHealthMetricsVo> latestMetrics = healthMetricsVos.stream()
+//                        .map(metrics -> {
+//                            TaskHealthMetricsVo currentMetrics =new TaskHealthMetricsVo();
+//                            TaskHealthMetricsVo previousMetrics=new TaskHealthMetricsVo() ;
+//                            if (!metrics.isEmpty()) {
+//                                currentMetrics = metrics.get(0);
+//                                currentMetrics.setNumber(number);
+//                            }
 //                            if (ObjectUtil.isNotNull(metrics.get(0)) && !ObjectUtil.isNotNull(metrics.get(1))) {
 //                                currentMetrics = metrics.get(0);
 //                                previousMetrics = metrics.get(1);
 //                            }
-                            // 计算实时配速
+                // 计算实时配速
 //                            if (ObjectUtil.isNotNull(currentMetrics.getTotalDistance())
 //                                && ObjectUtil.isNotNull(previousMetrics.getTotalDistance())) {
 //                                long currentDistance = currentMetrics.getTotalDistance();
 //                                long previousDistance = previousMetrics.getTotalDistance();
 //                                currentMetrics.setMatchingSpeed((int) (currentDistance - previousDistance));
 //                            }
-                            return currentMetrics;
-                        })
-                        .collect(Collectors.toList());
-                    detectionDataVo.setTaskHealthMetricsVoList(latestMetrics);
-                    // 异步插入处理后的健康指标数据
-                    if (!latestMetrics.isEmpty()) {
-                        List<TaskHealthMetricsBo> metricsBoList = MapstructUtils.convert(latestMetrics, TaskHealthMetricsBo.class);
-                        metricsBoList.forEach(metricsBo -> metricsBo.setTaskId(taskId));
-                        CompletableFuture.runAsync(() -> taskHealthMetricsService.insertList(metricsBoList), threadPoolExecutor).get();
-                    }
-                }
-            } catch (InterruptedException | ExecutionException e) {
+//                            return currentMetrics;
+//                        })
+//                        .collect(Collectors.toList());
+//                    detectionDataVo.setTaskHealthMetricsVoList(latestMetrics);
+                detectionDataVo.setTaskHealthMetricsVoList(taskHealthMetricsVoArrayList);
+                // 异步插入处理后的健康指标数据
+//                    if (!latestMetrics.isEmpty()) {
+//                        List<TaskHealthMetricsBo> metricsBoList = MapstructUtils.convert(latestMetrics, TaskHealthMetricsBo.class);
+//                        if (!metricsBoList.isEmpty()) {
+//                            metricsBoList.forEach(metricsBo -> metricsBo.setTaskId(taskId));
+//                            CompletableFuture.runAsync(() -> taskHealthMetricsService.insertList(metricsBoList), threadPoolExecutor).get();
+//                        }
+//                    }
+//                }
+            } catch (Exception e) {
                 log.error("Error processing bracelet status or health metrics: ", e);
                 Thread.currentThread().interrupt();
             }
