@@ -188,6 +188,11 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
             .eq(StudentInfo::getUuid,braceletId));
     }
 
+    @Override
+    public StudentInfoVo getStudentInfo(Long id) {
+        return studentInfoMapper.selectVoOne(new LambdaQueryWrapper<StudentInfo>().eq(StudentInfo::getId,id));
+    }
+
 
     /**
      * 根据StudentInfoBo构建查询条件

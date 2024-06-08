@@ -34,8 +34,8 @@ build/*
 nbbuild/
 nbdist/
 .nb-gradle/
-application-dev.yml
-application-prod.yml
+application-dev.yaml
+application-prod.yaml
 ######################################################################
 # Others
 *.log

@@ -84,5 +84,6 @@ public interface StudentInfoService  {
 
     StudentInfoVo selectStudentInfoByBraceletId(String braceletId);
 
+    StudentInfoVo getStudentInfo(Long id);
 }
 

@@ -119,5 +119,14 @@ public class StudentInfoController extends BaseController {
         studentInfoService.updateStudentInfo(studentInfoBo);
         return R.ok();
     }
+    /**
+     * 获取学生信息。
+     */
+    @GetMapping("/{id}")
+    public R<StudentInfoVo> getStudentInfo(@PathVariable Long id) {
+        StudentInfoVo studentInfoVo = studentInfoService.getStudentInfo(id);
+        return R.ok(studentInfoVo);
+    }
+
 }
 
