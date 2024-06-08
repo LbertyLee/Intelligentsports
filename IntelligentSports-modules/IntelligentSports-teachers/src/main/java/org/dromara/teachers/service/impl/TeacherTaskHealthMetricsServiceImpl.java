@@ -1,5 +1,6 @@
 package org.dromara.teachers.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,9 +68,8 @@ public class TeacherTaskHealthMetricsServiceImpl implements TaskHealthMetricsSer
 
     @Override
     public List<TaskHealthMetricsVo> selectTaskHealthMetricsList(Long taskId) {
-        List<TaskHealthMetrics> taskHealthMetrics = taskHealthMetricsMapper.selectList(new LambdaQueryWrapper<TaskHealthMetrics>().eq(TaskHealthMetrics::getTaskId, taskId));
-//        taskHealthMetrics.stream().
-        return List.of();
+        return taskHealthMetricsMapper.selectVoList(new LambdaQueryWrapper<TaskHealthMetrics>().eq(TaskHealthMetrics::getTaskId, taskId));
+
     }
 }
 

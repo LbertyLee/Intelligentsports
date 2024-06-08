@@ -3,10 +3,12 @@ package org.dromara.teachers.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.tenant.core.TenantEntity;
+import org.dromara.teachers.domain.vo.TaskHealthMetricsVo;
 
 import java.io.Serializable;
 
@@ -20,6 +22,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @TableName("teacher_task_health_metrics")
 @EqualsAndHashCode(callSuper=false)
+@AutoMapper(target = TaskHealthMetricsVo.class)
 public class TaskHealthMetrics extends TenantEntity {
     //唯一标识
     private Long id;
