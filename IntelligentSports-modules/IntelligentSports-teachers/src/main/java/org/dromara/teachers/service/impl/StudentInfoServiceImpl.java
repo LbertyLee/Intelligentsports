@@ -34,7 +34,7 @@ import java.util.Map;
 @Slf4j
 @Service("studentInfoService")
 @RequiredArgsConstructor
-public class StudentInfoServiceImpl  implements StudentInfoService {
+public class StudentInfoServiceImpl implements StudentInfoService {
 
     private final StudentInfoMapper studentInfoMapper;
 
@@ -46,8 +46,8 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public int bindbracelet(BindDraceletBo bindBracelet) {
-        if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.bindbDracelet.bindDraceletBo{}",bindBracelet);
+        if (log.isInfoEnabled()) {
+            log.info("StudentInfoServiceImpl.bindbDracelet.bindDraceletBo{}", bindBracelet);
         }
         // 创建学生信息对象，并设置学生ID和手环ID
         StudentInfo studentInfo = new StudentInfo()
@@ -61,14 +61,14 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      * 分页查询学生信息列表
      *
      * @param studentInfoBo 学生信息查询条件
-     * @param pageQuery 分页查询参数
+     * @param pageQuery     分页查询参数
      * @return TableDataInfo<StudentInfoVo> 包含分页学生信息的表格数据
      */
     @Override
     public TableDataInfo<StudentInfoVo> selectPageStudentInfoList(StudentInfoBo studentInfoBo, PageQuery pageQuery) {
-        if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.selectPageStudentInfoList.studentInfoBo{}",studentInfoBo);
-            log.info("StudentInfoServiceImpl.selectPageStudentInfoList.pageQuery{}",pageQuery);
+        if (log.isInfoEnabled()) {
+            log.info("StudentInfoServiceImpl.selectPageStudentInfoList.studentInfoBo{}", studentInfoBo);
+            log.info("StudentInfoServiceImpl.selectPageStudentInfoList.pageQuery{}", pageQuery);
         }
         // 根据查询条件和分页参数，执行数据库查询
         Page<StudentInfoVo> page = studentInfoMapper.selectPageStudentInfoList(pageQuery.build(),
@@ -85,8 +85,8 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public StudentInfo selectStudentInfoByStudentNumber(String studentNumber) {
-        if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.selectStudentInfoByStudentNumber.studentNumber{}",studentNumber);
+        if (log.isInfoEnabled()) {
+            log.info("StudentInfoServiceImpl.selectStudentInfoByStudentNumber.studentNumber{}", studentNumber);
         }
         // 通过学生编号查询学生信息
         return studentInfoMapper.selectByStudentNumber(studentNumber);
@@ -97,29 +97,30 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      * 该方法通过将StudentInfoBo对象的属性复制到StudentInfo对象中，并调用studentInfoMapper的insert方法来实现信息的插入。
      *
      * @param studentInfoBo 学生信息业务对象，包含需要插入的学生信息。
-     * 注意：该方法不返回任何值，即没有返回值。
+     *                      注意：该方法不返回任何值，即没有返回值。
      */
     @Override
     public void insertStudentInfo(StudentInfoBo studentInfoBo) {
-        if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.insertStudentInfo.studentInfoBo{}",studentInfoBo);
+        if (log.isInfoEnabled()) {
+            log.info("StudentInfoServiceImpl.insertStudentInfo.studentInfoBo{}", studentInfoBo);
         }
         // 将StudentInfoBo对象转换为StudentInfo对象
         StudentInfo studentInfo = BeanUtil.copyProperties(studentInfoBo, StudentInfo.class);
         // 调用mapper插入学生信息
         studentInfoMapper.insert(studentInfo);
     }
+
     /**
      * 更新学生信息。
      * 该方法通过接收一个学生信息BO（业务对象）实例，将其属性复制到学生信息实体中，然后根据实体的ID更新数据库中的学生信息。
      *
      * @param studentInfoBo 学生信息BO，包含需要更新的学生信息。
-     * 注意：该方法不返回任何值，更新操作的结果（例如成功或失败）无法通过方法调用直接获取。
+     *                      注意：该方法不返回任何值，更新操作的结果（例如成功或失败）无法通过方法调用直接获取。
      */
     @Override
     public void updateStudentInfo(StudentInfoBo studentInfoBo) {
-        if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.updateStudentInfo.studentInfoBo{}",studentInfoBo);
+        if (log.isInfoEnabled()) {
+            log.info("StudentInfoServiceImpl.updateStudentInfo.studentInfoBo{}", studentInfoBo);
         }
         // 将学生信息BO复制到学生信息实体
         StudentInfo studentInfo = BeanUtil.copyProperties(studentInfoBo, StudentInfo.class);
@@ -136,8 +137,8 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public void deleteStudent(Long studentId) {
-        if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.deleteStudent.studentId{}",studentId);
+        if (log.isInfoEnabled()) {
+            log.info("StudentInfoServiceImpl.deleteStudent.studentId{}", studentId);
         }
         // 根据提供的学生ID创建一个StudentInfo实例，并设置ID，然后通过mapper删除该学生信息
         studentInfoMapper.deleteById(new StudentInfo().setId(studentId));
@@ -151,8 +152,8 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public List<StudentInfoVo> selectStudentInfoList(StudentInfoBo studentInfoBo) {
-        if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.selectStudentInfoList.studentInfoBo{}",studentInfoBo);
+        if (log.isInfoEnabled()) {
+            log.info("StudentInfoServiceImpl.selectStudentInfoList.studentInfoBo{}", studentInfoBo);
         }
         // 构造查询条件包装对象，并通过mapper层执行查询操作，返回学生信息的Vo列表
         return studentInfoMapper.selectStudentInfoVoList(this.buildQueryWrapper(studentInfoBo));
@@ -166,11 +167,11 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public List<StudentInfoVo> batchSelectStudentInfoListByStudentIdList(List<Long> studentIdList) {
-        if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.batchSelectStudentInfoListByStudentIdList.studentIdList:{}",studentIdList);
+        if (log.isInfoEnabled()) {
+            log.info("StudentInfoServiceImpl.batchSelectStudentInfoListByStudentIdList.studentIdList:{}", studentIdList);
         }
         // 调用学生信息Mapper接口，根据提供的学生ID列表批量查询学生信息
-        return MapstructUtils.convert(studentInfoMapper.selectBatchIds(studentIdList),StudentInfoVo.class);
+        return MapstructUtils.convert(studentInfoMapper.selectBatchIds(studentIdList), StudentInfoVo.class);
     }
 
     /**
@@ -181,16 +182,16 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
      */
     @Override
     public StudentInfoVo selectStudentInfoByBraceletId(String braceletId) {
-        if(log.isInfoEnabled()){
-            log.info("StudentInfoServiceImpl.selectStudentInfoByBraceletId.braceletId{}",braceletId);
+        if (log.isInfoEnabled()) {
+            log.info("StudentInfoServiceImpl.selectStudentInfoByBraceletId.braceletId{}", braceletId);
         }
         return studentInfoMapper.selectVoOne(new LambdaQueryWrapper<StudentInfo>()
-            .eq(StudentInfo::getUuid,braceletId));
+            .eq(StudentInfo::getUuid, braceletId));
     }
 
     @Override
     public StudentInfoVo getStudentInfo(Long id) {
-        return studentInfoMapper.selectVoOne(new LambdaQueryWrapper<StudentInfo>().eq(StudentInfo::getId,id));
+        return studentInfoMapper.selectVoOne(new LambdaQueryWrapper<StudentInfo>().eq(StudentInfo::getId, id));
     }
 
 
@@ -204,9 +205,15 @@ public class StudentInfoServiceImpl  implements StudentInfoService {
         // 创建学生信息的查询包装器
         QueryWrapper<StudentInfo> wrapper = Wrappers.query();
         // 根据传入的ID、UUID、姓名构建查询条件
-        return  wrapper.eq(ObjectUtil.isNotNull(studentInfoBo.getId()), "id", studentInfoBo.getId())
-            .eq(ObjectUtil.isNotNull(studentInfoBo.getUuid()), "uuid", studentInfoBo.getUuid())
-            .like(ObjectUtil.isNotNull(studentInfoBo.getName()), "student_id", studentInfoBo.getName())
+        return wrapper
+            .eq(ObjectUtil.isNotNull(studentInfoBo.getId()),
+                "id", studentInfoBo.getId())
+            .eq(ObjectUtil.isNotNull(studentInfoBo.getUuid()),
+                "uuid", studentInfoBo.getUuid())
+            .like(ObjectUtil.isNotNull(studentInfoBo.getName()),
+                "name", studentInfoBo.getName())
+            .eq(ObjectUtil.isNotNull(studentInfoBo.getStudentNumber()),
+                "student_number", studentInfoBo.getStudentNumber())
             .orderByAsc("id");
     }
 }

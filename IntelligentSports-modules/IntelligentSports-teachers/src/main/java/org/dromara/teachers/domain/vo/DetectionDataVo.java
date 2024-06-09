@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class DetectionDataVo {
 
+    /***手环总数*/
     private Integer braceletsTotalNum;
 
     private Integer braceletsOnlineNum;

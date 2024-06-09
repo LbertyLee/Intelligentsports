@@ -224,10 +224,8 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
                         List<StudentInfoVo> studentInfoVoList = studentInfoFuture.get();
                         // 如果查询结果不为空，则处理学生信息
                         if (!ObjectUtil.isEmpty(studentInfoVoList)) {
-                            this.processStudentInfo(studentInfoVoList,
-                                detectionDataVo, detectionDataBo.getTaskId(),
-                                threadPoolExecutor
-                                , detectionDataBo.getNumber());
+                            this.processStudentInfo(studentInfoVoList, detectionDataVo, detectionDataBo.getTaskId(),
+                                threadPoolExecutor, detectionDataBo.getNumber());
                         }
                     } catch (InterruptedException | ExecutionException e) {
                         // 记录处理学生信息过程中的异常
@@ -275,6 +273,7 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
         List<String> braceletsTotalNum = studentInfoVoList.stream()
             .map(StudentInfoVo::getUuid)
             .collect(Collectors.toList());
+        //手环总数
         detectionDataVo.setBraceletsTotalNum(braceletsTotalNum.size());
         CompletableFuture<Void> braceletStatusFuture = CompletableFuture.runAsync(() -> {
             try {
@@ -283,13 +282,11 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
 //                List<BraceletStatusVo> onlineBracelets = braceletStatusVoList.stream()
 //                    .filter(braceletStatusVo -> Objects.equals(braceletStatusVo.getIsOnline(), Constants.IsOnline))
 //                    .toList();
-                detectionDataVo.setBraceletsOnlineNum(braceletsTotalNum.size());
                 // 获取在线手环的UUID列表
 //                List<String> onlineBraceletIds = braceletsTotalNum.stream()
 //                    .map(BraceletStatusVo::getUuid)
 //                    .collect(Collectors.toList());
                 long time = (System.currentTimeMillis() / 1000) - 5;
-//                long time = 1717478267;
                 // 异步获取手环实时数据
                 Map<String, List<TaskHealthMetricsVo>> healthMetricsVoMap = healthMetricsService
                     .selectHealthMetricsMapByBraceletsIdList(braceletsTotalNum, time);
@@ -303,7 +300,11 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
                         }
                     }
                 );
+                //手环在线数
+                detectionDataVo.setBraceletsOnlineNum(taskHealthMetricsVoArrayList.size());
+                //学生实时数据
                 detectionDataVo.setTaskHealthMetricsVoList(taskHealthMetricsVoArrayList);
+                //异步插入数据
                 if (!taskHealthMetricsVoArrayList.isEmpty()) {
                     List<TaskHealthMetricsBo> metricsBoList = MapstructUtils.convert(taskHealthMetricsVoArrayList, TaskHealthMetricsBo.class);
                     metricsBoList.forEach(metricsBo -> metricsBo.setTaskId(taskId));
