@@ -3,6 +3,7 @@ package org.dromara.system.mapper;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import org.apache.ibatis.annotations.Mapper;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.system.domain.SysMenu;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
@@ -16,6 +17,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
+@Mapper
 public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
 
     /**
