@@ -51,7 +51,7 @@ public interface StudentInfoService  {
      *                    通过这个方法，可以将新的学生信息存储到数据库中。
      * @return 无返回值。此方法操作数据库，将学生信息插入到指定的数据表中。
      */
-    void insertStudentInfo(StudentInfoBo studentInfo);
+    int insertStudentInfo(StudentInfoBo studentInfo);
 
     /**
      * 更新学生信息。

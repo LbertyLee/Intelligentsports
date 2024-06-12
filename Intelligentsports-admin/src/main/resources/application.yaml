@@ -62,11 +62,12 @@ spring:
   application:
     name: ${intelligent.name}
   # 资源信息
+
   messages:
     # 国际化资源文件路径
     basename: i18n/messages
   profiles:
-    active: @profiles.active@
+    active: dev
   # 文件上传
   servlet:
     multipart:

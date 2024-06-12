@@ -100,14 +100,14 @@ public class StudentInfoServiceImpl implements StudentInfoService {
      *                      注意：该方法不返回任何值，即没有返回值。
      */
     @Override
-    public void insertStudentInfo(StudentInfoBo studentInfoBo) {
+    public int insertStudentInfo(StudentInfoBo studentInfoBo) {
         if (log.isInfoEnabled()) {
             log.info("StudentInfoServiceImpl.insertStudentInfo.studentInfoBo{}", studentInfoBo);
         }
         // 将StudentInfoBo对象转换为StudentInfo对象
         StudentInfo studentInfo = BeanUtil.copyProperties(studentInfoBo, StudentInfo.class);
         // 调用mapper插入学生信息
-        studentInfoMapper.insert(studentInfo);
+       return studentInfoMapper.insert(studentInfo);
     }
 
     /**

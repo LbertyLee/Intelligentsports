@@ -3,6 +3,7 @@ package org.dromara.teachers.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.excel.core.ExcelResult;
@@ -30,6 +31,7 @@ import java.util.List;
  * @author LbertyLee
  * @since 2024-05-11 15:31:58
  */
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/teacher/studentInfo")
@@ -37,6 +39,16 @@ public class StudentInfoController extends BaseController {
 
     private final StudentInfoService studentInfoService;
 
+    /**
+     * 新增学生信息
+     */
+    @PostMapping
+    public R<Void> add(@RequestBody StudentInfoBo studentInfoBo) {
+        if(log.isInfoEnabled()){
+            log.info("TeacherTrainingTeamController.studentInfoBo={}", studentInfoBo);
+        }
+        return toAjax(studentInfoService.insertStudentInfo(studentInfoBo));
+    }
 
     /**
      * 绑定手环信息
