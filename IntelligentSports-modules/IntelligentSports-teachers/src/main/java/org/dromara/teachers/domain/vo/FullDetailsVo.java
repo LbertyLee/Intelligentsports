@@ -28,7 +28,7 @@ public class FullDetailsVo {
 
     /**训练日期*/
     @ExcelProperty(value = "训练日期")
-    private Date trainingDate;
+    private Long trainingDate;
 
     /**人数*/
     @ExcelProperty(value = "人数")

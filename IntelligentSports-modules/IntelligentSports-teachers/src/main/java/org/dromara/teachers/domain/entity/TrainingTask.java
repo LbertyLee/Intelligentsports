@@ -30,8 +30,13 @@ public class TrainingTask extends TenantEntity {
     //唯一标识
     private Long id;
 
+    //训练任务名称
+    private String taskName;
+    
     //训练队ID
     private Long trainingTeamId;
+
+
 
     //训练队名称
     private String trainingTeamName;

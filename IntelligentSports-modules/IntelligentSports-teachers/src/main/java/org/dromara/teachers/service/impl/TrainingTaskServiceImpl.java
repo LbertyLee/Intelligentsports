@@ -29,6 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -408,6 +411,19 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
             log.info("TrainingTaskServiceImpl.save.trainingTaskBo:{}", trainingTaskBo);
         }
         TrainingTask trainingTask = BeanUtil.copyProperties(trainingTaskBo, TrainingTask.class);
+        //查询当前训练队当天是第几次训练
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay();
+        Date startOfDayDate = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant());
+        Date endOfDayDate = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
+        LambdaQueryWrapper<TrainingTask> queryWrapper = new LambdaQueryWrapper<TrainingTask>()
+            .eq(TrainingTask::getTrainingTeamId, trainingTaskBo.getTrainingTeamId())
+            .between(TrainingTask::getCreateTime, startOfDayDate, endOfDayDate);
+        long count = trainingTaskMapper.selectCount(queryWrapper)+1;
+        //训练任务名称
+        String taskName =trainingTaskBo.getTrainingTeamName()+" "+count+" "+"次训练";
+        trainingTask.setTaskName(taskName);
         trainingTaskMapper.insert(trainingTask);
         //查询训练队下学生ID列表
         Long trainingTeamId = trainingTaskBo.getTrainingTeamId();

@@ -107,7 +107,7 @@ public class TrainingReportServiceImpl implements TrainingReportService {
             .setTeacherName(trainingTaskVo.getTeacherName())
             .setTeacherName(trainingTaskVo.getTeacherName())
             .setTrainingType(trainingTaskVo.getExerciseTypeName())
-            .setTrainingDate(trainingTaskVo.getCreateTime())
+            .setTrainingDate(trainingTaskVo.getTrainingTime())
             .setPersonNum(trainingTaskVo.getPersonNum());
 
         //训练任务学生数据
