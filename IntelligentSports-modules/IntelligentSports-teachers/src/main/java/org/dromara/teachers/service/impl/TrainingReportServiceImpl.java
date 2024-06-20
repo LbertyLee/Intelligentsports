@@ -96,10 +96,6 @@ public class TrainingReportServiceImpl implements TrainingReportService {
         if (log.isInfoEnabled()) {
             log.info("TrainingReportServiceImpl.getFullDetailsVo.taskId={}", taskId);
         }
-        List<TaskHealthMetricsVo> taskHealthMetricsVos = taskHealthMetricsService.selectTaskHealthMetricsList(taskId);
-        if (taskHealthMetricsVos.isEmpty()) {
-            return new FullDetailsVo();
-        }
         //训练任务基础信息
         TrainingTaskVo trainingTaskVo = trainingTaskService.selectOne(taskId);
         FullDetailsVo fullDetailsVo = new FullDetailsVo();
@@ -109,19 +105,23 @@ public class TrainingReportServiceImpl implements TrainingReportService {
             .setTrainingType(trainingTaskVo.getExerciseTypeName())
             .setTrainingDate(trainingTaskVo.getTrainingTime())
             .setPersonNum(trainingTaskVo.getPersonNum());
-
-        //训练任务学生数据
-        Map<String, List<TaskHealthMetricsVo>> fullDetailsMap = taskHealthMetricsVos.stream()
-            .collect(Collectors.groupingBy(TaskHealthMetricsVo::getBraceletId));
-        ArrayList<FullDetailsInfoVo> fullDetailsList = new ArrayList<>();
-        fullDetailsMap.forEach((braceletId, studentTrainingTaskInfoVos) -> {
-                FullDetailsInfoVo fullDetailsInfoVo = this.calculateSummary(studentTrainingTaskInfoVos);
-                StudentInfoVo studentInfoVo = studentInfoService.selectStudentInfoByBraceletId(braceletId);
-                fullDetailsInfoVo.setStudentName(studentInfoVo.getName());
-                fullDetailsList.add(fullDetailsInfoVo);
-            }
-        );
-        fullDetailsVo.setFullDetailsReportVoList(fullDetailsList);
+        List<TaskHealthMetricsVo> taskHealthMetricsVos = taskHealthMetricsService.selectTaskHealthMetricsList(taskId);
+       if(!taskHealthMetricsVos.isEmpty()){
+           //训练任务学生数据
+           Map<String, List<TaskHealthMetricsVo>> fullDetailsMap = taskHealthMetricsVos.stream()
+               .collect(Collectors.groupingBy(TaskHealthMetricsVo::getBraceletId));
+           ArrayList<FullDetailsInfoVo> fullDetailsList = new ArrayList<>();
+           fullDetailsMap.forEach((braceletId, studentTrainingTaskInfoVos) -> {
+                   FullDetailsInfoVo fullDetailsInfoVo = this.calculateSummary(studentTrainingTaskInfoVos);
+                   StudentInfoVo studentInfoVo = studentInfoService.selectStudentInfoByBraceletId(braceletId);
+                   fullDetailsInfoVo.setStudentName(studentInfoVo.getName());
+                   fullDetailsList.add(fullDetailsInfoVo);
+               }
+           );
+           fullDetailsVo.setFullDetailsReportVoList(fullDetailsList);
+       }else {
+           fullDetailsVo.setFullDetailsReportVoList(new ArrayList<>());
+       }
         return fullDetailsVo;
     }
 
