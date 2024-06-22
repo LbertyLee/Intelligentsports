@@ -17,6 +17,10 @@
         <result property="bloodOxygen" column="blood_oxygen" jdbcType="INTEGER"/>
     </resultMap>
 
+    <delete id="cleanUpExpiredData">
+        TRUNCATE TABLE teacher_health_metrics
+    </delete>
+
     <select id="selectTestList" resultType="org.dromara.teachers.domain.entity.HealthMetrics">
         select * from health_metrics
     </select>

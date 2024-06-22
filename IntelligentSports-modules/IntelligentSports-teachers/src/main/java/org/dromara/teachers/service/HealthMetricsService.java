@@ -21,4 +21,6 @@ public interface HealthMetricsService {
     void insert(String msg);
 
     Map<String, List<TaskHealthMetricsVo>> selectHealthMetricsMapByBraceletsIdList(List<String> braceletsTotalNum, long time);
+
+    void cleanUpExpiredData();
 }

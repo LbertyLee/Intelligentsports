@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TrainingReportServiceImpl implements TrainingReportService {
 
-    private final StudentTrainingTaskInfoService studentTrainingTaskInfoService;
 
     private final TaskHealthMetricsService taskHealthMetricsService;
 
@@ -42,13 +41,8 @@ public class TrainingReportServiceImpl implements TrainingReportService {
     @Override
     public TableDataInfo<TrainingTaskVo> selectPageTrainingReport(TrainingTaskBo trainingTaskBo, PageQuery pageQuery) {
         TableDataInfo<TrainingTaskVo> trainingTaskVoTableDataInfoS = trainingTaskService.selectPageTrainingTask(trainingTaskBo, pageQuery);
-        List<TrainingTaskVo> rows = trainingTaskVoTableDataInfoS.getRows();
+        List<TrainingTaskVo> list = trainingTaskVoTableDataInfoS.getRows();
         // 将查询结果包装成TableDataInfo对象返回
-        List<TrainingTaskVo> list = rows.stream().peek(trainingTaskVo -> {
-            Long trainingTeamId = trainingTaskVo.getTrainingTeamId();
-            List<TrainingTeamStudentVo> trainingTeamStudentVos = trainingTeamStudentService.selectList(new TrainingTeamStudentBo().setTrainingTeamId(trainingTeamId));
-            trainingTaskVo.setPersonNum(trainingTeamStudentVos.size());
-        }).toList();
         trainingTaskVoTableDataInfoS.setRows(list);
         return trainingTaskVoTableDataInfoS;
     }
@@ -99,7 +93,7 @@ public class TrainingReportServiceImpl implements TrainingReportService {
         //训练任务基础信息
         TrainingTaskVo trainingTaskVo = trainingTaskService.selectOne(taskId);
         FullDetailsVo fullDetailsVo = new FullDetailsVo();
-        fullDetailsVo.setTrainingName(trainingTaskVo.getTrainingTeamName())
+        fullDetailsVo.setTrainingName(trainingTaskVo.getTaskName())
             .setTeacherName(trainingTaskVo.getTeacherName())
             .setTeacherName(trainingTaskVo.getTeacherName())
             .setTrainingType(trainingTaskVo.getExerciseTypeName())
@@ -136,7 +130,8 @@ public class TrainingReportServiceImpl implements TrainingReportService {
         double averageHeartRate = studentTrainingTaskInfoVoList.stream()
             .mapToDouble(TaskHealthMetricsVo::getHeartRate)
             .average()
-            .orElse(0);
+            .orElse(0.00);
+        averageHeartRate = (double) Math.round(averageHeartRate);
         fullDetailsInfoVo.setAverageHeartRate(averageHeartRate);
 //        double averagePace = studentTrainingTaskInfoVoList.stream()
 //            .mapToDouble(StudentTrainingTaskInfoVo::getAveragePace)

@@ -289,7 +289,7 @@ public class TrainingTaskServiceImpl implements TrainingTaskService {
 //                List<String> onlineBraceletIds = braceletsTotalNum.stream()
 //                    .map(BraceletStatusVo::getUuid)
 //                    .collect(Collectors.toList());
-                long time = (System.currentTimeMillis() / 1000) - 5;
+                long time = (System.currentTimeMillis() / 1000) - 1;
                 // 异步获取手环实时数据
                 Map<String, List<TaskHealthMetricsVo>> healthMetricsVoMap = healthMetricsService
                     .selectHealthMetricsMapByBraceletsIdList(braceletsTotalNum, time);

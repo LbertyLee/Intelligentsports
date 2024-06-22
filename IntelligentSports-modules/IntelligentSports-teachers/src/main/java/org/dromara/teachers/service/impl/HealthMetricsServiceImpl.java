@@ -71,6 +71,17 @@ public class HealthMetricsServiceImpl implements HealthMetricsService {
     }
 
     /**
+     * 清理过期数据。
+     *
+     * 本方法旨在实现对过期数据的清理工作，以保持数据的时效性和存储空间的优化。
+     */
+    @Override
+    public void cleanUpExpiredData() {
+        healthMetricsMapper.cleanUpExpiredData();
+    }
+
+
+    /**
      * 根据手环ID和时间查询健康指标列表
      *
      * @param braceletId 手环的唯一标识符
